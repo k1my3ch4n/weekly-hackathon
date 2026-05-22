@@ -1,11 +1,12 @@
-import { useFsdLayers, useIsFsdProject } from "@entities/report/model/hooks";
+import { useIsFsdProject } from "@entities/report/model/hooks";
 import { Badge } from "@shared/components/Badge";
-import type { FsdLayerStat } from "@entities/report/model/types";
-import { LAYER_ORDER, LAYER_COLORS, SHARED_BLOAT_THRESHOLD } from "./constants";
+import { LAYER_COLORS } from "./constants";
+import { useFsdStats } from "./hooks";
 
 export function FsdArchitectureView() {
-  const fsdLayers = useFsdLayers();
   const isFsdProject = useIsFsdProject();
+  const { fsdLayers, totalSize, sortedLayers, sharedRatio, isSharedBloated } =
+    useFsdStats();
 
   if (!isFsdProject || fsdLayers.length === 0) {
     return (
@@ -15,15 +16,6 @@ export function FsdArchitectureView() {
     );
   }
 
-  const totalSize = fsdLayers.reduce((sum, layer) => sum + layer.sizeKB, 0);
-  const sortedLayers = LAYER_ORDER.map((layerName) =>
-    fsdLayers.find((layer) => layer.layer === layerName)
-  ).filter((layer): layer is FsdLayerStat => layer !== undefined);
-
-  const sharedLayer = fsdLayers.find((layer) => layer.layer === "shared");
-  const sharedRatio = sharedLayer && totalSize > 0 ? sharedLayer.sizeKB / totalSize : 0;
-  const isSharedBloated = sharedRatio > SHARED_BLOAT_THRESHOLD;
-
   return (
     <section className="space-y-4">
       {isSharedBloated && (
@@ -31,7 +23,8 @@ export function FsdArchitectureView() {
           <span className="text-yellow-600">⚠</span>
           <p className="text-sm text-yellow-700">
             <strong>shared</strong> 레이어가 전체의{" "}
-            <strong>{(sharedRatio * 100).toFixed(1)}%</strong>를 차지합니다. 비대화 징후입니다.
+            <strong>{(sharedRatio * 100).toFixed(1)}%</strong>를 차지합니다.
+            비대화 징후입니다.
           </p>
         </aside>
       )}
@@ -68,7 +61,8 @@ export function FsdArchitectureView() {
       </div>
 
       <footer className="border-t border-gray-100 pt-3 text-right text-xs text-gray-400">
-        총 {totalSize.toFixed(1)} KB · {fsdLayers.reduce((sum, layer) => sum + layer.fileCount, 0)} 파일
+        총 {totalSize.toFixed(1)} KB ·{" "}
+        {fsdLayers.reduce((sum, layer) => sum + layer.fileCount, 0)} 파일
       </footer>
     </section>
   );

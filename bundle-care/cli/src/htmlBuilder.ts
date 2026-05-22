@@ -7,7 +7,7 @@ import type { BndlReportData } from "./types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_PATH = resolve(__dirname, "..", "assets", "template.html");
-const DATA_SLOT_REGEX = /\/\* __BNDL_DATA__ \*\/[\s\S]*?(?=;)/;
+const DATA_SLOT_REGEX = /\/\* __BNDL_DATA__ \*\/[\s\S]*?\/\* __BNDL_DATA_END__ \*\//;
 const OUTPUT_FILENAME = "bndl-report.html";
 
 export async function buildReport(

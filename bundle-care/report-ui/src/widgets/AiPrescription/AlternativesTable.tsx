@@ -14,16 +14,26 @@ export function AlternativesTable({ alternatives }: AlternativesTableProps) {
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-3 py-2 text-left font-medium text-gray-600">라이브러리</th>
-              <th className="px-3 py-2 text-right font-medium text-gray-600">크기</th>
-              <th className="px-3 py-2 text-left font-medium text-gray-600">설명</th>
+              <th className="px-3 py-2 text-left font-medium text-gray-600">
+                라이브러리
+              </th>
+              <th className="px-3 py-2 text-right font-medium text-gray-600">
+                크기
+              </th>
+              <th className="px-3 py-2 text-left font-medium text-gray-600">
+                설명
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {alternatives.map((alt) => (
               <tr key={alt.name} className="hover:bg-gray-50">
-                <td className="px-3 py-2 font-medium text-blue-600">{alt.name}</td>
-                <td className="px-3 py-2 text-right text-gray-500">{alt.sizeKB} KB</td>
+                <td className="px-3 py-2 font-medium text-blue-600">
+                  {alt.name}
+                </td>
+                <td className="px-3 py-2 text-right text-gray-500">
+                  {alt.sizeKB} KB
+                </td>
                 <td className="px-3 py-2 text-gray-600">{alt.description}</td>
               </tr>
             ))}

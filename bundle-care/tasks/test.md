@@ -1,4 +1,46 @@
-# BndlCare Report UI — 테스트 가이드
+# BndlCare — 테스트 가이드
+
+---
+
+## Phase 2. CLI Analyzer 테스트
+
+### 실행 방법
+
+```bash
+cd bundle-care/cli
+npm run test
+# 또는
+npx tsx test/run-test.ts
+```
+
+### 사용 픽스처
+
+| 파일 | 설명 |
+|------|------|
+| `test/fixtures/stats.json` | webpack stats 샘플 (2 청크, FSD 구조, lodash·moment 전체 번들 포함) |
+| `test/fixtures/package.json` | 의존성 샘플 (`webpack`, `typescript`가 dependencies에 포함 → Docker 리스크) |
+
+### 검증 체크리스트
+
+- [ ] 프로젝트명 `test-project` 파싱
+- [ ] 청크 2개 파싱 (main 512 KB + vendor 340 KB, 합계 ~852 KB)
+- [ ] Docker 리스크: `webpack`, `typescript` 탐지 (location: `dependencies`)
+- [ ] Tree-shaking 누수: `lodash` 탐지 (usageRatio ≥ 0.9, 전체 번들 포함)
+- [ ] Tree-shaking 누수: `moment` 탐지 (usageRatio ≥ 0.9, 전체 번들 포함)
+- [ ] FSD 프로젝트 감지: `true`
+- [ ] FSD 레이어: `features`, `entities`, `shared` 레이어 감지
+
+### Fail-Safe 수동 확인
+
+1. **번들 사이즈 초과** → `cli/test/run-test.ts`에서 `maxBundleSizeKB: 100`으로 바꾸고 실행
+   - 기대 결과: `[BndlCare] ❌ 번들 사이즈 초과: ...` 출력 후 `process.exit(1)`
+
+2. **Docker 리스크 탐지** → `failOnDockerRisk: true`로 바꾸고 실행
+   - 기대 결과: `[BndlCare] ❌ Docker 리스크 패키지 탐지: webpack, typescript` 출력 후 `process.exit(1)`
+
+---
+
+## Phase 4~8. Report UI 테스트 가이드
 
 ## 실행 방법
 

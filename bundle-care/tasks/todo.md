@@ -133,6 +133,21 @@
 
 ---
 
+---
+
+## ⚠️ Warning — 배포 전 확인 필요 사항
+
+> 현재 동작에는 영향 없으나, Phase 9 진입 전 또는 `npm publish` 전에 반드시 처리해야 하는 항목
+
+- [ ] **`cli/assets/` 디렉토리 부재** (Phase 9 의존)
+  - `cli/src/htmlBuilder.ts`가 읽을 `cli/assets/template.html` 경로가 없는 상태
+  - `report-ui` 빌드 결과물을 `cli/assets/`로 복사하는 스크립트 필요 (Phase 10 빌드 파이프라인에서 처리)
+- [ ] **`cli/src/run.ts` — `AnalysisResult` 타입 미명시**
+  - [run.ts:16](../cli/src/run.ts) `analyze(config)` 반환값을 암묵적 타입 추론에 의존
+  - `analyzer.ts`에서 export된 `AnalysisResult`를 명시적으로 import하여 계약을 명확히 할 것
+
+---
+
 ## 완료 기준
 
 - `npx bndl-care` 한 줄 실행으로 5초 이내 `bndl-report.html` 생성

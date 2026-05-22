@@ -109,22 +109,23 @@
 
 ## Phase 9-1. Report UI — 코드 품질 (ESLint 설정)
 
-- [ ] `report-ui/` ESLint 설정 추가
-  - `eslint`, `@typescript-eslint/eslint-plugin`, `eslint-plugin-react-hooks` 설치
-  - `report-ui/.eslintrc.cjs` (또는 `eslint.config.js`) 작성
-  - `package.json` `lint` 스크립트 추가: `"lint": "eslint src --ext ts,tsx"`
+- [x] `report-ui/` ESLint 설정 추가
+  - `eslint`, `typescript-eslint`, `eslint-plugin-react-hooks`, `globals` 설치
+  - `report-ui/eslint.config.js` (flat config) 작성
+  - `package.json` `lint` 스크립트 추가: `"lint": "eslint src"`
 
 ---
 
 ## Phase 10. 통합 빌드 파이프라인
 
-- [ ] 루트 `package.json` 빌드 스크립트 작성
-  - `build:ui` → `report-ui` Vite 빌드 → `cli/assets/template.html` 복사
+- [x] 루트 `package.json` 빌드 스크립트 작성
+  - `build:ui` → `report-ui` Vite 빌드 + `cli/assets/template.html` 복사 연결
   - `build:cli` → `cli` TypeScript 컴파일
   - `build` → `build:ui` + `build:cli` 순차 실행
-- [ ] `npx bndl-care` 엔드-투-엔드 동작 검증
+- [x] `npx bndl-care` 엔드-투-엔드 동작 검증
   - 샘플 `stats.json` + `package.json` 으로 전체 파이프라인 테스트
-- [ ] `bndlcare.config.json` 샘플 파일 작성 및 문서화
+  - `bndl-report.html` 정상 생성 확인
+- [x] `bndlcare.config.json` 샘플 파일 작성 및 문서화
 
 ---
 

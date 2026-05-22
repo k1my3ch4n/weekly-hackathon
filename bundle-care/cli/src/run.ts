@@ -1,5 +1,8 @@
+import { resolve } from "node:path";
+import { existsSync } from "node:fs";
 import { loadConfig } from "./config.js";
 import { analyze, type AnalysisResult } from "./analyzer.js";
+import { ensureStats } from "./statsGenerator.js";
 import { buildReport } from "./htmlBuilder.js";
 import { logger, createSpinner } from "./utils/logger.js";
 import { type CliOptions } from "./types.js";
@@ -10,6 +13,24 @@ export async function run(options: CliOptions): Promise<void> {
   logger.blank();
 
   const config = loadConfig(options.config);
+  const statsPath = resolve(process.cwd(), config.statsJsonPath);
+  const packageJsonPath = resolve(process.cwd(), config.packageJsonPath);
+
+  // stats.json 없으면 번들러 감지 후 자동 생성
+  if (!existsSync(statsPath)) {
+    try {
+      const { bundler } = ensureStats(statsPath, packageJsonPath, (detectedBundler) => {
+        logger.info(`stats.json 없음 — ${detectedBundler} 빌드를 실행합니다...`);
+        logger.blank();
+      });
+      logger.blank();
+      logger.success(`stats.json 생성 완료 (${bundler})`);
+      logger.blank();
+    } catch (error) {
+      logger.error(error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  }
 
   const spinner = createSpinner("프로젝트 분석 중...");
   spinner.start();

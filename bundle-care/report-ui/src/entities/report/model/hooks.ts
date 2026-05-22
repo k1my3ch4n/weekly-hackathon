@@ -18,3 +18,11 @@ export const useFsdLayers = () =>
 
 export const useAiPrescriptions = () =>
   useReportStore((state) => state.reportData?.aiPrescriptions ?? []);
+
+export const useSelectedModules = () =>
+  useReportStore((state) => {
+    const { reportData, selectedChunkName } = state;
+    if (!reportData) { return []; }
+    const selectedChunk = reportData.chunks.find((chunk) => chunk.name === selectedChunkName);
+    return selectedChunk ? selectedChunk.modules : reportData.chunks.flatMap((chunk) => chunk.modules);
+  });

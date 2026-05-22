@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { DashboardPage } from "@pages/DashboardPage";
 import { useReportStore } from "@entities/report/model/store";
-import { getDevMock } from "./mocks";
 
 function App() {
   const setReportData = useReportStore((state) => state.setReportData);
@@ -16,10 +15,12 @@ function App() {
     }
 
     if (import.meta.env.DEV) {
-      const mock = getDevMock();
-      if (mock) {
-        setReportData(mock);
-      }
+      import("./mocks").then(({ getDevMock }) => {
+        const mock = getDevMock();
+        if (mock) {
+          setReportData(mock);
+        }
+      });
     }
   }, [setReportData]);
 

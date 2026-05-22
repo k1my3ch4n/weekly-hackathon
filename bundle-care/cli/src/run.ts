@@ -1,5 +1,6 @@
 import { loadConfig } from "./config.js";
-import { analyze } from "./analyzer.js";
+import { analyze, type AnalysisResult } from "./analyzer.js";
+import { buildReport } from "./htmlBuilder.js";
 import { logger, createSpinner } from "./utils/logger.js";
 import { type CliOptions } from "./types.js";
 
@@ -13,7 +14,7 @@ export async function run(options: CliOptions): Promise<void> {
   const spinner = createSpinner("프로젝트 분석 중...");
   spinner.start();
 
-  const result = analyze(config);
+  const result: AnalysisResult = analyze(config);
 
   spinner.succeed("분석 완료");
 
@@ -28,11 +29,7 @@ export async function run(options: CliOptions): Promise<void> {
     // TODO: Phase 3 — aiServiceClient.ts 연동
   }
 
-  // TODO: Phase 9 — htmlBuilder.ts 연동
+  const reportPath = await buildReport(result, options.open);
   logger.blank();
-  logger.success("bndl-report.html 이 생성되었습니다.");
-
-  if (options.open) {
-    // TODO: Phase 9 — open() 연동
-  }
+  logger.success(`bndl-report.html 생성 완료: ${reportPath}`);
 }

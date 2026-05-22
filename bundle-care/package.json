@@ -10,6 +10,7 @@
     "build:ui": "npm run build --workspace=report-ui",
     "build:cli": "npm run build --workspace=cli",
     "build": "npm run build:ui && npm run build:cli",
+    "copy:template": "node scripts/copy-template.mjs",
     "dev:ui": "npm run dev --workspace=report-ui",
     "dev:cli": "npm run dev --workspace=cli"
   },

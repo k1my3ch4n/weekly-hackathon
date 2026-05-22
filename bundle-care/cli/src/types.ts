@@ -13,7 +13,7 @@ export interface CliOptions {
 }
 
 export const DEFAULT_CONFIG: Required<BndlCareConfig> = {
-  maxBundleSizeKB: 500,
+  maxBundleSizeKB: 0,
   geminiApiKey: "",
   failOnDockerRisk: false,
   statsJsonPath: "stats.json",

@@ -1,12 +1,12 @@
 import { useReportData, useViewMode } from "@entities/report/model/hooks";
 import { BundleTreemap } from "@widgets/BundleTreemap";
 import { AiPrescription } from "@widgets/AiPrescription";
+import { DockerRiskWidget } from "@widgets/DockerRiskWidget";
+import { TreeshakingLeakWidget } from "@widgets/TreeshakingLeakWidget";
 import { ViewToggle } from "@features/ViewToggle";
 import { FsdArchitectureView } from "@widgets/FsdArchitectureView";
 import { Card } from "@shared/components/Card";
 import { Badge } from "@shared/components/Badge";
-import { DockerRiskList } from "./DockerRiskList";
-import { TreeshakingLeakList } from "./TreeshakingLeakList";
 
 export function DashboardPage() {
   const reportData = useReportData();
@@ -61,17 +61,8 @@ export function DashboardPage() {
           {viewMode === "fsd" ? <FsdArchitectureView /> : <BundleTreemap width={1100} height={480} />}
         </Card>
 
-        {reportData.dockerRisks.length > 0 && (
-          <Card title="Docker 리스크">
-            <DockerRiskList risks={reportData.dockerRisks} />
-          </Card>
-        )}
-
-        {reportData.treeshakingLeaks.length > 0 && (
-          <Card title="Tree-shaking 누수">
-            <TreeshakingLeakList leaks={reportData.treeshakingLeaks} />
-          </Card>
-        )}
+        <DockerRiskWidget />
+        <TreeshakingLeakWidget />
 
         <AiPrescription />
       </div>

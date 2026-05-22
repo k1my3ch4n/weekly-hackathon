@@ -1,4 +1,5 @@
 import { loadConfig } from "./config.js";
+import { analyze } from "./analyzer.js";
 import { logger, createSpinner } from "./utils/logger.js";
 import { type CliOptions } from "./types.js";
 
@@ -12,10 +13,14 @@ export async function run(options: CliOptions): Promise<void> {
   const spinner = createSpinner("프로젝트 분석 중...");
   spinner.start();
 
-  // TODO: Phase 2 — analyzer.ts 연동
-  await Promise.resolve();
+  const result = analyze(config);
 
   spinner.succeed("분석 완료");
+
+  logger.blank();
+  logger.info(`총 번들 크기: ${result.totalBundleSizeKB.toFixed(1)} KB`);
+  logger.info(`Docker 리스크: ${result.dockerRisks.length}개`);
+  logger.info(`Tree-shaking 누수: ${result.treeshakingLeaks.length}개`);
 
   if (!options.ai || !config.geminiApiKey) {
     logger.warn("AI 처방을 건너뜁니다. (--no-ai 또는 geminiApiKey 미설정)");

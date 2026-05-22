@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@shared/components/Button";
-
-const COPY_FEEDBACK_DURATION_MS = 2000;
+import { COPY_FEEDBACK_DURATION_MS } from "./constants";
 
 interface CodeCopierProps {
   code: string;

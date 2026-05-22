@@ -8,15 +8,7 @@ import {
 import { buildTree } from "@shared/utils/buildTree";
 import { createSVGElement, truncateLabel } from "@shared/utils/svgHelper";
 import type { ChunkInfo } from "@entities/report/model/types";
-
-const TREEMAP_COLORS = [
-  "#3b82f6", "#6366f1", "#8b5cf6", "#ec4899",
-  "#f59e0b", "#10b981", "#06b6d4", "#f97316",
-];
-
-const MIN_NODE_WIDTH = 40;
-const MIN_NODE_HEIGHT = 20;
-const LABEL_FONT_SIZE = "11";
+import { TREEMAP_COLORS, MIN_NODE_WIDTH, MIN_NODE_HEIGHT, LABEL_FONT_SIZE } from "./constants";
 
 interface TreemapProps {
   width?: number;
@@ -30,11 +22,12 @@ export function BundleTreemap({ width = 800, height = 480 }: TreemapProps) {
   const setSelectedChunkName = useSetSelectedChunkName();
 
   const selectedChunk: ChunkInfo | null =
-    reportData?.chunks.find((chunk) => chunk.name === selectedChunkName) ?? null;
+    reportData?.chunks.find((chunk) => chunk.name === selectedChunkName) ??
+    null;
 
   const allModules = selectedChunk
     ? selectedChunk.modules
-    : reportData?.chunks.flatMap((chunk) => chunk.modules) ?? [];
+    : (reportData?.chunks.flatMap((chunk) => chunk.modules) ?? []);
 
   useEffect(() => {
     if (!containerRef.current || allModules.length === 0) {
@@ -50,9 +43,13 @@ export function BundleTreemap({ width = 800, height = 480 }: TreemapProps) {
       .sum((node) => node.size)
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
-    d3Hierarchy.treemap<typeof treeData>().size([width, height]).padding(2)(root);
+    d3Hierarchy.treemap<typeof treeData>().size([width, height]).padding(2)(
+      root,
+    );
 
-    const leaves = root.leaves() as d3Hierarchy.HierarchyRectangularNode<typeof treeData>[];
+    const leaves = root.leaves() as d3Hierarchy.HierarchyRectangularNode<
+      typeof treeData
+    >[];
 
     const svgEl = createSVGElement("svg", {
       width: String(width),

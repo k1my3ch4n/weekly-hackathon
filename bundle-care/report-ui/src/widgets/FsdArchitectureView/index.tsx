@@ -1,21 +1,7 @@
 import { useFsdLayers, useIsFsdProject } from "@entities/report/model/hooks";
 import { Badge } from "@shared/components/Badge";
 import type { FsdLayerStat } from "@entities/report/model/types";
-
-const LAYER_ORDER: FsdLayerStat["layer"][] = [
-  "app", "pages", "widgets", "features", "entities", "shared",
-];
-
-const LAYER_COLORS: Record<FsdLayerStat["layer"], string> = {
-  app: "bg-purple-500",
-  pages: "bg-blue-500",
-  widgets: "bg-indigo-500",
-  features: "bg-teal-500",
-  entities: "bg-green-500",
-  shared: "bg-gray-500",
-};
-
-const SHARED_BLOAT_THRESHOLD = 0.4;
+import { LAYER_ORDER, LAYER_COLORS, SHARED_BLOAT_THRESHOLD } from "./constants";
 
 export function FsdArchitectureView() {
   const fsdLayers = useFsdLayers();

@@ -1,10 +1,5 @@
 import { useIsFsdProject, useViewMode, useSetViewMode } from "@entities/report/model/hooks";
-import type { ViewMode } from "@entities/report/model/store";
-
-const VIEW_OPTIONS: { label: string; value: ViewMode }[] = [
-  { label: "번들 트리맵", value: "default" },
-  { label: "FSD 아키텍처", value: "fsd" },
-];
+import { VIEW_OPTIONS } from "./constants";
 
 export function ViewToggle() {
   const viewMode = useViewMode();

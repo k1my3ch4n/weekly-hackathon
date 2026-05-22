@@ -2,10 +2,10 @@
 
 ## Phase 0. 프로젝트 초기 세팅
 
-- [ ] 루트 `package.json` 작성 (npm workspaces: `cli`, `report-ui`)
-- [ ] `.gitignore` 작성
-- [ ] `README.md` 기본 내용 작성 (프로젝트 개요, 실행 방법)
-- [ ] `tasks/lessons.md` 파일 생성
+- [x] 루트 `package.json` 작성 (npm workspaces: `cli`, `report-ui`)
+- [x] `.gitignore` 작성
+- [x] `README.md` 기본 내용 작성 (프로젝트 개요, 실행 방법)
+- [x] `tasks/lessons.md` 파일 생성
 
 ---
 
@@ -23,23 +23,18 @@
 
 ## Phase 2. CLI — 정적 분석 엔진
 
-- [ ] `cli/src/analyzer.ts` — 핵심 분석 로직
+- [x] `cli/src/analyzer.ts` — 핵심 분석 로직
   - `stats.json` 파싱 및 청크(Chunk) 트리 구조 변환
   - `package.json` 분석: `dependencies` vs `devDependencies` 분리
   - **Docker 리스크 스캔:** `devDependencies` 누수 패키지 탐지
   - **Tree-shaking 누수 진단:** 대형 유틸리티 라이브러리 과다 임포트 탐지
     - 대상: `lodash`, `moment`, `rxjs`, `antd`, `@mui/material` 등
   - Fail-Safe 로직: 설정 임계값 초과 시 `process.exit(1)` 처리
-- [ ] 분석 결과 타입 정의 (`BndlReportData` 인터페이스)
+- [x] 분석 결과 타입 정의 (`BndlReportData` 인터페이스) — `cli/src/types.ts`에 정의
 
 ---
 
-## Phase 3. CLI — AI 처방 연동
-
-- [ ] `cli/src/aiServiceClient.ts` — Gemini API 호출
-  - 탐지된 비대 패키지 목록을 기반으로 프롬프트 생성
-  - 응답 파싱: 대안 라이브러리 비교표 + Vanilla JS 스니펫 JSON 추출
-  - API 키 없을 시 AI 처방 없이 리포트 생성하는 fallback 처리
+## ~~Phase 3. CLI — AI 처방 연동~~ (보류 — 마지막에 작업)
 
 ---
 
@@ -103,12 +98,12 @@
 
 ## Phase 9. CLI — HTML 빌더 및 파이프라인 완성
 
-- [ ] `cli/src/htmlBuilder.ts` — 리포트 HTML 생성
+- [x] `cli/src/htmlBuilder.ts` — 리포트 HTML 생성
   - `cli/assets/template.html` 읽기
   - `/* __BNDL_DATA__ */` 슬롯에 분석 JSON 데이터 주입
   - `bndl-report.html` 로컬 파일 생성
   - `--open` 옵션 시 브라우저 자동 오픈
-- [ ] `cli/assets/template.html` — `report-ui` 빌드 결과물 복사 자동화 스크립트
+- [x] `cli/assets/template.html` — `scripts/copy-template.mjs` + `package.json copy:template` 스크립트로 복사 자동화
 
 ---
 
@@ -137,14 +132,10 @@
 
 ## ⚠️ Warning — 배포 전 확인 필요 사항
 
-> 현재 동작에는 영향 없으나, Phase 9 진입 전 또는 `npm publish` 전에 반드시 처리해야 하는 항목
+> 현재 동작에는 영향 없으나, `npm publish` 전에 반드시 처리해야 하는 항목
 
-- [ ] **`cli/assets/` 디렉토리 부재** (Phase 9 의존)
-  - `cli/src/htmlBuilder.ts`가 읽을 `cli/assets/template.html` 경로가 없는 상태
-  - `report-ui` 빌드 결과물을 `cli/assets/`로 복사하는 스크립트 필요 (Phase 10 빌드 파이프라인에서 처리)
-- [ ] **`cli/src/run.ts` — `AnalysisResult` 타입 미명시**
-  - [run.ts:16](../cli/src/run.ts) `analyze(config)` 반환값을 암묵적 타입 추론에 의존
-  - `analyzer.ts`에서 export된 `AnalysisResult`를 명시적으로 import하여 계약을 명확히 할 것
+- [x] **`cli/assets/` 디렉토리 부재** (Phase 9에서 해소 — `scripts/copy-template.mjs`로 생성)
+- [x] **`cli/src/run.ts` — `AnalysisResult` 타입 미명시** (Phase 9에서 해소)
 
 ---
 

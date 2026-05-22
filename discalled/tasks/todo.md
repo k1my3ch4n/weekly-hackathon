@@ -2,37 +2,37 @@
 
 ## Phase 1: 프로젝트 초기 설정
 
-- [ ] `package.json` 생성 (의존성: discord.js, @discordjs/voice, openai, libsodium-wrappers, opusscript, dotenv, ts-node, typescript 등)
-- [ ] `tsconfig.json` 설정 (절대경로 path alias 포함)
-- [ ] `nodemon.json` 설정 (ts-node 기반 개발 서버)
-- [ ] `.env.example` 파일 생성 (DISCORD_TOKEN, DISCORD_CLIENT_ID, XAI_API_KEY)
-- [ ] `.gitignore` 생성
-- [ ] 디렉토리 스캐폴딩 (`src/@types`, `src/events`, `src/commands`, `src/services`, `src/utils`, `src/assets`)
+- [x] `package.json` 생성 (의존성: discord.js, @discordjs/voice, openai, libsodium-wrappers, opusscript, dotenv, ts-node, typescript 등)
+- [x] `tsconfig.json` 설정 (절대경로 path alias 포함)
+- [x] `nodemon.json` 설정 (ts-node 기반 개발 서버)
+- [x] `.env.example` 파일 생성 (DISCORD_TOKEN, DISCORD_CLIENT_ID, XAI_API_KEY)
+- [x] `.gitignore` 생성
+- [x] 디렉토리 스캐폴딩 (`src/@types`, `src/events`, `src/commands`, `src/services`, `src/utils`, `src/assets`)
 
 ---
 
 ## Phase 2: 기반 인프라 (Config & Utils)
 
-- [ ] `src/config.ts` — 환경변수 타입 검증 및 읽기 전용 export
-- [ ] `src/@types/index.d.ts` — 오디오 버퍼 및 세션 관련 커스텀 타입 선언
-- [ ] `src/utils/logger.ts` — 콘솔 출력 가독화 로거
-- [ ] `src/utils/embed.ts` — 성공/에러 Rich Embed 템플릿 생성기
+- [x] `src/config.ts` — 환경변수 타입 검증 및 읽기 전용 export
+- [x] `src/@types/index.d.ts` — 오디오 버퍼 및 세션 관련 커스텀 타입 선언
+- [x] `src/utils/logger.ts` — 콘솔 출력 가독화 로거
+- [x] `src/utils/embed.ts` — 성공/에러 Rich Embed 템플릿 생성기
 
 ---
 
 ## Phase 3: 디스코드 봇 코어
 
-- [ ] `src/index.ts` — Discord Client 빌드, 이벤트 핸들러 등록, 봇 로그인
-- [ ] `src/events/ready.ts` — 봇 구동 확인 및 슬래시 명령어 글로벌 등록
-- [ ] `src/events/interactionCreate.ts` — 슬래시 명령어 분기 및 실행 핸들러
+- [x] `src/index.ts` — Discord Client 빌드, 이벤트 핸들러 등록, 봇 로그인
+- [x] `src/events/ready.ts` — 봇 구동 확인 및 슬래시 명령어 글로벌 등록
+- [x] `src/events/interactionCreate.ts` — 슬래시 명령어 분기 및 실행 핸들러
 
 ---
 
 ## Phase 4: 슬래시 명령어 정의
 
-- [ ] `src/commands/search.ts` — `/검색` : 텍스트 기반 즉시 검색 명령어 정의
-- [ ] `src/commands/call.ts` — `/호출` : 음성 채널 입장 및 녹음 트리거 명령어 정의
-- [ ] `src/commands/index.ts` — 명령어 컬렉션 배럴 export
+- [x] `src/commands/search.ts` — `/검색` : 텍스트 기반 즉시 검색 명령어 정의
+- [x] `src/commands/call.ts` — `/호출` : 음성 채널 입장 명령어 정의
+- [x] `src/commands/index.ts` — 명령어 컬렉션 배럴 export
 
 ---
 
@@ -79,6 +79,9 @@
 
 - [ ] `src/assets/entry.mp3` 추가 (입장 효과음)
 - [ ] `src/assets/exit.mp3` 추가 (퇴장 효과음)
+- [ ] 입장/퇴장 사운드 교체 방법: `src/assets/` 의 MP3 파일만 교체하면 적용됨
+  - `createAudioResource()` + `AudioPlayer`로 재생 (`@discordjs/voice`)
+  - MP3, WAV, OGG 포맷 모두 지원
 - [ ] 에러 핸들링 전체 점검 (API 실패, 음성채널 미참여 등)
 - [ ] 로컬 테스트: 봇 실제 구동 및 `/호출`, `/검색` 엔드-투-엔드 검증
 

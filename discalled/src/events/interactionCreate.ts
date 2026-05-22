@@ -1,4 +1,4 @@
-import { Interaction } from 'discord.js';
+import { Interaction, MessageFlags } from 'discord.js';
 import { commands } from '@/commands';
 import { createErrorEmbed } from '@/utils/embed';
 import { logger } from '@/utils/logger';
@@ -14,7 +14,7 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
     logger.warn(`알 수 없는 명령어: ${interaction.commandName}`);
     await interaction.reply({
       embeds: [createErrorEmbed('알 수 없는 명령어입니다.')],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return;
   }

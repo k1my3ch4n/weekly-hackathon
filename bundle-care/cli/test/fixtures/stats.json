@@ -1,0 +1,52 @@
+{
+  "chunks": [
+    {
+      "id": 0,
+      "names": ["main"],
+      "size": 524288,
+      "modules": [
+        { "id": 1, "name": "./src/app/main.tsx", "size": 1024 },
+        { "id": 2, "name": "./src/pages/Home/index.tsx", "size": 2048 },
+        { "id": 3, "name": "./src/pages/About/index.tsx", "size": 1536 },
+        { "id": 4, "name": "./src/features/auth/ui/LoginForm.tsx", "size": 4096 },
+        { "id": 5, "name": "./src/features/auth/model/store.ts", "size": 2048 },
+        { "id": 6, "name": "./src/entities/user/model/types.ts", "size": 1024 },
+        { "id": 7, "name": "./src/entities/post/model/types.ts", "size": 1024 },
+        { "id": 8, "name": "./src/shared/ui/Button.tsx", "size": 2048 },
+        { "id": 9, "name": "./src/shared/utils/format.ts", "size": 1024 },
+        { "id": 10, "name": "./src/shared/api/instance.ts", "size": 2048 }
+      ]
+    },
+    {
+      "id": 1,
+      "names": ["vendor"],
+      "size": 348160,
+      "modules": [
+        { "id": 101, "name": "./node_modules/react/index.js", "size": 7168 },
+        { "id": 102, "name": "./node_modules/react-dom/index.js", "size": 132096 },
+        { "id": 103, "name": "./node_modules/lodash/lodash.js", "size": 72704 },
+        { "id": 104, "name": "./node_modules/moment/moment.js", "size": 68608 },
+        { "id": 105, "name": "./node_modules/axios/lib/axios.js", "size": 51200 },
+        { "id": 106, "name": "./node_modules/react-router-dom/index.js", "size": 16384 }
+      ]
+    }
+  ],
+  "modules": [
+    { "id": 1, "name": "./src/app/main.tsx", "size": 1024, "chunks": [0] },
+    { "id": 2, "name": "./src/pages/Home/index.tsx", "size": 2048, "chunks": [0] },
+    { "id": 3, "name": "./src/pages/About/index.tsx", "size": 1536, "chunks": [0] },
+    { "id": 4, "name": "./src/features/auth/ui/LoginForm.tsx", "size": 4096, "chunks": [0] },
+    { "id": 5, "name": "./src/features/auth/model/store.ts", "size": 2048, "chunks": [0] },
+    { "id": 6, "name": "./src/entities/user/model/types.ts", "size": 1024, "chunks": [0] },
+    { "id": 7, "name": "./src/entities/post/model/types.ts", "size": 1024, "chunks": [0] },
+    { "id": 8, "name": "./src/shared/ui/Button.tsx", "size": 2048, "chunks": [0] },
+    { "id": 9, "name": "./src/shared/utils/format.ts", "size": 1024, "chunks": [0] },
+    { "id": 10, "name": "./src/shared/api/instance.ts", "size": 2048, "chunks": [0] },
+    { "id": 101, "name": "./node_modules/react/index.js", "size": 7168, "chunks": [1] },
+    { "id": 102, "name": "./node_modules/react-dom/index.js", "size": 132096, "chunks": [1] },
+    { "id": 103, "name": "./node_modules/lodash/lodash.js", "size": 72704, "chunks": [1] },
+    { "id": 104, "name": "./node_modules/moment/moment.js", "size": 68608, "chunks": [1] },
+    { "id": 105, "name": "./node_modules/axios/lib/axios.js", "size": 51200, "chunks": [1] },
+    { "id": 106, "name": "./node_modules/react-router-dom/index.js", "size": 16384, "chunks": [1] }
+  ]
+}

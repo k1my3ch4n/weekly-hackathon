@@ -169,10 +169,18 @@ export const interviewQuestions: InterviewQuestion[] = [
     question: "OAuth 2.0 Authorization Code Flow를 설명해주세요.",
     answer: (
       <>
-        1) 클라이언트가 인가 서버(Google 등)로 리다이렉트 2) 사용자가 권한 동의
-        3) 인가 서버가 <strong>인가 코드(code)</strong>를 콜백 URL로 전달 4)
-        서버가 인가 코드 + client_secret으로 <strong>access_token 교환</strong>{" "}
-        5) access_token으로 리소스 서버 API 호출
+        <ol>
+          <li>클라이언트가 인가 서버(Google 등)로 리다이렉트</li>
+          <li>사용자가 권한 동의</li>
+          <li>
+            인가 서버가 <strong>인가 코드(code)</strong>를 콜백 URL로 전달
+          </li>
+          <li>
+            서버가 인가 코드 + client_secret으로{" "}
+            <strong>access_token 교환</strong>
+          </li>
+          <li>access_token으로 리소스 서버 API 호출</li>
+        </ol>
         <br />
         <br />
         <InlineCode>state</InlineCode> 파라미터로 CSRF를 방지하고,{" "}

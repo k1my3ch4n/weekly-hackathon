@@ -123,11 +123,16 @@ export const interviewQuestions: InterviewQuestion[] = [
     question: "언제 Flexbox를, 언제 Grid를 사용하나요?",
     answer: (
       <>
-        <strong>Flexbox 사용</strong>: 네비게이션 바, 버튼 그룹, 카드 내부 정렬,
-        아이콘+텍스트 정렬 등 <strong>1차원 배치</strong>가 필요할 때.{" "}
+        <strong>Flexbox 사용</strong>: 네비게이션 바, 버튼 그룹, 카드 내부
+        정렬, 아이콘+텍스트 정렬 등 <strong>1차원 배치</strong>가 필요할 때.
+        <br />
+        <br />
         <strong>Grid 사용</strong>: 페이지 전체 레이아웃, 대시보드, 갤러리 등{" "}
-        <strong>2차원 배치</strong>가 필요할 때. 실무에서는 둘을 함께 사용합니다
-        — Grid로 큰 레이아웃을 잡고, 각 영역 내부는 Flexbox로 정렬합니다.
+        <strong>2차원 배치</strong>가 필요할 때.
+        <br />
+        <br />
+        실무에서는 둘을 함께 사용합니다 — Grid로 큰 레이아웃을 잡고, 각 영역
+        내부는 Flexbox로 정렬합니다.
       </>
     ),
   },

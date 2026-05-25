@@ -100,15 +100,21 @@ export const interviewQuestions: InterviewQuestion[] = [
     question: "React의 Diffing 알고리즘은 어떻게 동작하나요?",
     answer: (
       <>
-        React는 두 가지 가정으로 O(n) 복잡도의 휴리스틱 알고리즘을 사용합니다.{" "}
-        1. <strong>다른 타입의 요소는 다른 트리를 생성</strong>합니다 —{" "}
-        <InlineCode size="md">&lt;div&gt;</InlineCode>에서{" "}
-        <InlineCode size="md">&lt;span&gt;</InlineCode>으로 바뀌면 전체
-        서브트리를 교체합니다. 2.{" "}
-        <strong>key prop으로 자식 요소의 안정적 식별</strong>이 가능합니다 —
-        같은 key를 가진 요소는 동일한 요소로 인식하여 재사용합니다. 비교는
-        루트부터 재귀적으로 진행되며, 같은 타입이면 속성만 비교하고 다른
-        타입이면 전체를 교체합니다.
+        React는 두 가지 가정으로 O(n) 복잡도의 휴리스틱 알고리즘을 사용합니다.
+        <ol>
+          <li>
+            <strong>다른 타입의 요소는 다른 트리를 생성</strong>합니다 —{" "}
+            <InlineCode size="md">&lt;div&gt;</InlineCode>에서{" "}
+            <InlineCode size="md">&lt;span&gt;</InlineCode>으로 바뀌면 전체
+            서브트리를 교체합니다.
+          </li>
+          <li>
+            <strong>key prop으로 자식 요소의 안정적 식별</strong>이 가능합니다
+            — 같은 key를 가진 요소는 동일한 요소로 인식하여 재사용합니다.
+          </li>
+        </ol>
+        비교는 루트부터 재귀적으로 진행되며, 같은 타입이면 속성만 비교하고
+        다른 타입이면 전체를 교체합니다.
       </>
     ),
   },

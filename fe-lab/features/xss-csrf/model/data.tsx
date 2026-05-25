@@ -126,11 +126,19 @@ export const interviewQuestions: InterviewQuestion[] = [
         분류됩니다.
         <br />
         <br />
-        방지: 1) 입력값 이스케이프(<InlineCode>escapeHtml</InlineCode>) 2)
-        React의 자동 이스케이프 활용 3){" "}
-        <InlineCode>dangerouslySetInnerHTML</InlineCode> 사용 시{" "}
-        <InlineCode>DOMPurify</InlineCode>로 정제 4) CSP 헤더 설정 5) HttpOnly
-        쿠키로 JS 접근 차단
+        방지:
+        <ol>
+          <li>
+            입력값 이스케이프(<InlineCode>escapeHtml</InlineCode>)
+          </li>
+          <li>React의 자동 이스케이프 활용</li>
+          <li>
+            <InlineCode>dangerouslySetInnerHTML</InlineCode> 사용 시{" "}
+            <InlineCode>DOMPurify</InlineCode>로 정제
+          </li>
+          <li>CSP 헤더 설정</li>
+          <li>HttpOnly 쿠키로 JS 접근 차단</li>
+        </ol>
       </>
     ),
   },
@@ -144,10 +152,21 @@ export const interviewQuestions: InterviewQuestion[] = [
         첨부하여 요청을 전송합니다.
         <br />
         <br />
-        방지: 1) <strong>CSRF 토큰</strong> — 폼마다 고유 토큰 발급 후 서버에서
-        검증 2) <InlineCode>SameSite=Strict</InlineCode> 쿠키 — cross-origin
-        요청에 쿠키 미전송 3) <InlineCode>Origin</InlineCode>/
-        <InlineCode>Referer</InlineCode> 헤더 검증 4) Custom 헤더 요구
+        방지:
+        <ol>
+          <li>
+            <strong>CSRF 토큰</strong> — 폼마다 고유 토큰 발급 후 서버에서 검증
+          </li>
+          <li>
+            <InlineCode>SameSite=Strict</InlineCode> 쿠키 — cross-origin 요청에
+            쿠키 미전송
+          </li>
+          <li>
+            <InlineCode>Origin</InlineCode>/<InlineCode>Referer</InlineCode>{" "}
+            헤더 검증
+          </li>
+          <li>Custom 헤더 요구</li>
+        </ol>
       </>
     ),
   },

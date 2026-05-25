@@ -104,10 +104,14 @@ export const interviewQuestions: InterviewQuestion[] = [
     answer: (
       <>
         <InlineCode>Promise.all</InlineCode>: 모든 Promise가 fulfilled되면 결과
-        배열 반환, 하나라도 rejected되면 즉시 reject.{" "}
+        배열 반환, 하나라도 rejected되면 즉시 reject.
+        <br />
         <InlineCode>Promise.race</InlineCode>: 가장 먼저 settle된 결과 반환
-        (성공이든 실패든). <InlineCode>Promise.allSettled</InlineCode>: 모든
-        Promise가 settle될 때까지 대기, 각각의 status와 value/reason 반환.{" "}
+        (성공이든 실패든).
+        <br />
+        <InlineCode>Promise.allSettled</InlineCode>: 모든 Promise가 settle될
+        때까지 대기, 각각의 status와 value/reason 반환.
+        <br />
         <InlineCode>Promise.any</InlineCode>: 가장 먼저 fulfilled된 값 반환,
         모두 rejected되면 AggregateError 발생.
       </>

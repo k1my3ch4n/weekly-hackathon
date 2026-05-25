@@ -111,14 +111,21 @@ export const interviewQuestions: InterviewQuestion[] = [
     answer: (
       <>
         워터폴의 각 막대는 리소스 로딩 단계를 나타냅니다.
-        <strong>DNS</strong>: 도메인 → IP 변환,
-        <strong>TCP</strong>: 3-way handshake,
-        <strong>TLS</strong>: 암호화 핸드셰이크,
-        <strong>TTFB</strong>(Time to First Byte): 서버 처리 시간,
-        <strong>Download</strong>: 콘텐츠 다운로드입니다. TTFB가 길면 서버
-        최적화가, Download가 길면 파일 크기 최적화가 필요합니다.
-        <InlineCode size="md">Stalled</InlineCode>는 브라우저 커넥션 제한으로
-        대기하는 시간입니다.
+        <br />
+        <strong>DNS</strong>: 도메인 → IP 변환
+        <br />
+        <strong>TCP</strong>: 3-way handshake
+        <br />
+        <strong>TLS</strong>: 암호화 핸드셰이크
+        <br />
+        <strong>TTFB</strong>(Time to First Byte): 서버 처리 시간
+        <br />
+        <strong>Download</strong>: 콘텐츠 다운로드
+        <br />
+        <br />
+        TTFB가 길면 서버 최적화가, Download가 길면 파일 크기 최적화가
+        필요합니다. <InlineCode size="md">Stalled</InlineCode>는 브라우저
+        커넥션 제한으로 대기하는 시간입니다.
       </>
     ),
   },
@@ -127,13 +134,19 @@ export const interviewQuestions: InterviewQuestion[] = [
     answer: (
       <>
         <strong>2xx (성공)</strong>: 200 OK, 201 Created, 204 No Content.
-        <strong>3xx (리다이렉트)</strong>: 301 영구 이동(캐시됨), 302 임시 이동,
-        304 Not Modified(캐시 사용).
-        <strong>4xx (클라이언트 오류)</strong>: 400 잘못된 요청, 401 인증 필요,
-        403 권한 없음, 404 리소스 없음.
+        <br />
+        <strong>3xx (리다이렉트)</strong>: 301 영구 이동(캐시됨), 302 임시
+        이동, 304 Not Modified(캐시 사용).
+        <br />
+        <strong>4xx (클라이언트 오류)</strong>: 400 잘못된 요청, 401 인증
+        필요, 403 권한 없음, 404 리소스 없음.
+        <br />
         <strong>5xx (서버 오류)</strong>: 500 서버 내부 오류, 502 게이트웨이
-        오류, 503 서비스 중단. 특히 401(인증 안 됨)과 403(인증됨, 권한 없음)의
-        차이를 명확히 알아야 합니다.
+        오류, 503 서비스 중단.
+        <br />
+        <br />
+        특히 401(인증 안 됨)과 403(인증됨, 권한 없음)의 차이를 명확히 알아야
+        합니다.
       </>
     ),
   },

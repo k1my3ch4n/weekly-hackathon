@@ -1,5 +1,3 @@
-import { CodeBlock } from "@shared/ui";
-
 interface StepDetailProps {
   step: {
     icon: string;
@@ -22,9 +20,9 @@ export default function StepDetail({ step }: StepDetailProps) {
       <div className="text-[13px] text-text-secondary leading-[1.8]">
         {step.desc}
       </div>
-      <CodeBlock className="mt-4 text-label">
+      <pre className="mt-4 rounded-lg p-4 bg-bg-deep text-[12px] leading-[1.8] font-mono text-text-secondary overflow-x-auto whitespace-pre">
         {step.visual}
-      </CodeBlock>
+      </pre>
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { DemoLayout, RightPanel, LogPanel } from "@shared/ui";
 import { useLog } from "@shared/hooks";
 import {
@@ -138,26 +138,17 @@ export default function VirtualDomDemo() {
               Virtual DOM
             </div>
             {DOM_COMPARISON.map((row) => (
-              <>
-                <div
-                  key={`${row.category}-cat`}
-                  className="bg-bg-deep px-3 py-2 text-text-secondary"
-                >
+              <React.Fragment key={row.category}>
+                <div className="bg-bg-deep px-3 py-2 text-text-secondary">
                   {row.category}
                 </div>
-                <div
-                  key={`${row.category}-real`}
-                  className="bg-bg-deep px-3 py-2 text-text-muted"
-                >
+                <div className="bg-bg-deep px-3 py-2 text-text-muted">
                   {row.realDom}
                 </div>
-                <div
-                  key={`${row.category}-vdom`}
-                  className="bg-bg-deep px-3 py-2 text-accent-cyan/80"
-                >
+                <div className="bg-bg-deep px-3 py-2 text-accent-cyan/80">
                   {row.virtualDom}
                 </div>
-              </>
+              </React.Fragment>
             ))}
           </div>
         </div>

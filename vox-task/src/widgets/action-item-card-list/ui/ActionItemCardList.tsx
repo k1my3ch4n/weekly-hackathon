@@ -21,7 +21,7 @@ export function ActionItemCardList() {
     : items.filter((item) => item.status === activeFilter);
 
   return (
-    <section className="flex flex-col gap-3 w-full">
+    <section className="flex flex-col gap-3 w-full h-full">
       <header className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-gray-700">
           액션 아이템
@@ -57,7 +57,7 @@ export function ActionItemCardList() {
         ))}
       </nav>
 
-      <ul className="flex flex-col gap-2 max-h-[420px] overflow-y-auto pr-0.5">
+      <ul className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto pr-0.5">
         {filteredItems.length === 0 ? (
           <li className="flex flex-col items-center justify-center py-10 text-gray-400 text-sm gap-1">
             <span className="text-2xl">📋</span>

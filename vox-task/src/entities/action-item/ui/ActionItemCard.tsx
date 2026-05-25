@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Badge } from '@/shared/ui';
+import { formatDueDate } from '@/shared/lib';
 import type { ActionItem, ActionItemStatus } from '../model/types';
 
 interface ActionItemCardProps {
@@ -145,14 +146,18 @@ export function ActionItemCard({ item, onStatusChange, onRemove, onUpdate }: Act
             <span>{item.assignee}</span>
           </span>
         )}
-        {item.dueDate && (
-          <span className="flex items-center gap-1">
-            <span>📅</span>
-            <span>{item.dueDate}</span>
-          </span>
-        )}
+        {item.dueDate && (() => {
+          const { label, isOverdue } = formatDueDate(item.dueDate);
+          return (
+            <span className={`flex items-center gap-1 ${isOverdue ? 'text-red-500 font-medium' : ''}`}>
+              <span>📅</span>
+              <span>{label}</span>
+              {isOverdue && <span className="text-red-500">⚠</span>}
+            </span>
+          );
+        })()}
         <time className="ml-auto" dateTime={new Date(item.createdAt).toISOString()}>
-          {new Date(item.createdAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+          {new Date(item.createdAt).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
         </time>
       </footer>
 

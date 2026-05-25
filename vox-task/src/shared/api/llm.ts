@@ -10,16 +10,21 @@ interface LlmResponse {
   items: RawActionItem[];
 }
 
-const SYSTEM_PROMPT = `You are an assistant that extracts action items from meeting transcripts.
+function buildSystemPrompt(): string {
+  const today = new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD
+  return `You are an assistant that extracts action items from meeting transcripts.
+Today's date is ${today}.
 You may receive previous context to help understand incomplete sentences, and a new transcript segment.
 Extract action items ONLY from the new transcript segment, using the context only to understand broken sentences.
 Respond with a JSON object in this exact format:
-{"items": [{"content": "action description", "assignee": "person or null", "dueDate": "date string or null"}]}
+{"items": [{"content": "action description", "assignee": "person or null", "dueDate": "YYYY-MM-DD or null"}]}
 Rules:
 - "assignee" must be null if no specific person is explicitly mentioned.
+- "dueDate" must be in YYYY-MM-DD format. Convert relative expressions (e.g. "tomorrow", "내일", "next Friday") to absolute dates based on today's date.
 - "dueDate" must be null if no specific date or deadline is explicitly mentioned.
 - Do not infer or guess assignee or dueDate from context.
 If there are no action items in the new segment, return: {"items": []}`;
+}
 
 export async function extractActionItems(transcript: string, context?: string): Promise<RawActionItem[]> {
   if (!transcript.trim()) {
@@ -36,7 +41,7 @@ export async function extractActionItems(transcript: string, context?: string): 
     const completion = await client.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: buildSystemPrompt() },
         { role: 'user', content: userContent },
       ],
       temperature: 0.1,

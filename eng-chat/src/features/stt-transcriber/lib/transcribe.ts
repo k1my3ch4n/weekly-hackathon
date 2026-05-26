@@ -12,8 +12,7 @@ export async function transcribeWavFile(wavPath: string, userId: UserId): Promis
   const transcription = await client.audio.transcriptions.create({
     file: audioFile,
     model: 'whisper-large-v3',
-    language: 'en',
-    response_format: 'text',
+    response_format: 'verbose_json',
   });
 
   fs.unlink(wavPath, (err) => {
@@ -22,13 +21,16 @@ export async function transcribeWavFile(wavPath: string, userId: UserId): Promis
     }
   });
 
-  const text = typeof transcription === 'string' ? transcription : transcription.text;
+  const result = transcription as unknown as { text: string; language: string };
+  const text = result.text ?? '';
+  const detectedLanguage = result.language ?? undefined;
 
-  logger.info(`Transcription result for user ${userId}: "${text.trim()}"`);
+  logger.info(`Transcription result for user ${userId}: "${text.trim()}" (lang: ${detectedLanguage})`);
 
   return {
     text: text.trim(),
     userId,
     timestamp: Date.now(),
+    detectedLanguage,
   };
 }

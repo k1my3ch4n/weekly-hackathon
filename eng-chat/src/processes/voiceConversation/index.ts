@@ -4,6 +4,7 @@ import { subscribeSpeaker, opusStreamToWav } from '@features/audio-recorder';
 import { transcribeWavFile } from '@features/stt-transcriber';
 import { generateReply } from '@features/ai-chat';
 import { synthesizeSpeech, playAudioBuffer } from '@features/tts-speaker';
+import { translateToKorean } from '@shared/utils/translator';
 import { logger } from '@shared/utils/logger';
 import type { UserId } from '@shared/types';
 
@@ -18,6 +19,7 @@ export async function runVoicePipeline(
   textChannel: GuildTextBasedChannel,
   userId: UserId,
   username: string,
+  setPlaying: (v: boolean) => void,
 ): Promise<void> {
   try {
     logger.info(`[Pipeline:${username}] 시작 — 음성 스트림 구독`);
@@ -33,19 +35,33 @@ export async function runVoicePipeline(
       return;
     }
 
-    await textChannel.send(`🎙️ **${username}**: ${transcription.text}`);
-    logger.info(`[Pipeline:${username}] STT 완료 → LLM 요청`);
+    // 9-9: 비영어 입력 감지 시 안내 후 종료
+    if (transcription.detectedLanguage && transcription.detectedLanguage !== 'en') {
+      logger.info(`[Pipeline:${username}] 비영어 감지 (${transcription.detectedLanguage}) — 파이프라인 종료`);
+      await textChannel.send('Please speak in English! 영어로 말씀해 주세요. 😊');
+      return;
+    }
 
-    const replyText = await generateReply(userId, transcription.text);
+    logger.info(`[Pipeline:${username}] STT 완료 → LLM 요청 + 유저 발화 번역 병렬 처리`);
 
-    logger.info(`[Pipeline:${username}] LLM 완료 → TTS 요청`);
-    const ttsResult = await synthesizeSpeech(replyText);
+    // 9-6: LLM 생성과 유저 발화 번역을 병렬 처리
+    const [replyText, userKorean] = await Promise.all([
+      generateReply(userId, transcription.text),
+      translateToKorean(transcription.text),
+    ]);
+
+    await textChannel.send(`🎙️ **${username}**: ${transcription.text}\n> 번역: ${userKorean}`);
+    logger.info(`[Pipeline:${username}] LLM 완료 → TTS 요청 + AI 답변 번역 병렬 처리`);
+
+    // 9-6: TTS 합성과 AI 답변 번역을 병렬 처리
+    const [ttsResult, aiKorean] = await Promise.all([
+      synthesizeSpeech(replyText),
+      translateToKorean(replyText),
+    ]);
 
     lastAudioMap.set(userId, ttsResult.audioBuffer);
 
-    logger.info(`[Pipeline:${username}] TTS 완료 → 음성 송출`);
-    await playAudioBuffer(connection, ttsResult.audioBuffer);
-
+    // 9-1: 음성 재생 전에 AI 텍스트 + [다시 듣기] 버튼 먼저 전송
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(`replay:${userId}`)
@@ -54,9 +70,19 @@ export async function runVoicePipeline(
     );
 
     await textChannel.send({
-      content: `🤖 **AI Tutor**: ${replyText}`,
+      content: `🤖 **AI Tutor**: ${replyText}\n> 번역: ${aiKorean}`,
       components: [row],
     });
+
+    logger.info(`[Pipeline:${username}] TTS 완료 → 음성 송출`);
+
+    // 9-3: 음성 송출 전후로 isBotSpeaking 플래그 제어
+    setPlaying(true);
+    try {
+      await playAudioBuffer(connection, ttsResult.audioBuffer);
+    } finally {
+      setPlaying(false);
+    }
 
     logger.info(`[Pipeline:${username}] 파이프라인 완료`);
   } catch (error) {
@@ -73,6 +99,7 @@ export async function runVoicePipeline(
 export async function replayLastAudio(
   connection: VoiceConnection,
   userId: UserId,
+  setPlaying: (v: boolean) => void,
 ): Promise<boolean> {
   const audioBuffer = lastAudioMap.get(userId);
 
@@ -81,6 +108,13 @@ export async function replayLastAudio(
   }
 
   logger.info(`[Replay] 마지막 TTS 재재생 — userId: ${userId}`);
-  await playAudioBuffer(connection, audioBuffer);
+
+  // 9-3: 재재생 중에도 isBotSpeaking 플래그 제어
+  setPlaying(true);
+  try {
+    await playAudioBuffer(connection, audioBuffer);
+  } finally {
+    setPlaying(false);
+  }
   return true;
 }

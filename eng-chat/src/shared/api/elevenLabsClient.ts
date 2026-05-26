@@ -1,6 +1,10 @@
-// TODO: Phase 4-D — ElevenLabs TTS 클라이언트
-// 사용 패키지: elevenlabs (npm install elevenlabs)
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
 
-export function getElevenLabsApiKey(): string {
-  return process.env.ELEVENLABS_API_KEY ?? '';
+let client: ElevenLabsClient | null = null;
+
+export function getElevenLabsClient(): ElevenLabsClient {
+  if (!client) {
+    client = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY });
+  }
+  return client;
 }

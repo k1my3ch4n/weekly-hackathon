@@ -1,1 +1,2 @@
-// TODO: Phase 4-D — OpenAI TTS 연동 및 Discord 음성 송출
+export { synthesizeSpeech } from './lib/synthesize';
+export { playAudioBuffer } from './lib/playAudio';

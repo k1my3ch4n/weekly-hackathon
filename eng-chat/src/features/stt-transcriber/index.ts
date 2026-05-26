@@ -1,1 +1,1 @@
-// TODO: Phase 4-B — Groq Whisper STT 연동
+export { transcribeWavFile } from './lib/transcribe';

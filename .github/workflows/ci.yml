@@ -6,11 +6,13 @@ on:
     paths:
       - 'fe-lab/**'
       - 'vox-task/**'
+      - 'eng-chat/**'
   pull_request:
     branches: [main]
     paths:
       - 'fe-lab/**'
       - 'vox-task/**'
+      - 'eng-chat/**'
 
 jobs:
   build-fe-lab:
@@ -65,3 +67,25 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  build-eng-chat:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: eng-chat
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eng-chat/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npm run typecheck

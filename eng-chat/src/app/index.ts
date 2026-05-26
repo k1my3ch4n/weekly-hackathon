@@ -1,5 +1,5 @@
 import { Client, Events, GatewayIntentBits, GuildMember, ChannelType, GuildTextBasedChannel } from 'discord.js';
-import { joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
+import { joinVoiceChannel, getVoiceConnection, VoiceConnectionStatus } from '@discordjs/voice';
 import { config } from './config';
 import { logger } from '@shared/utils/logger';
 import { sessionStore } from '@entities/session';
@@ -7,6 +7,8 @@ import { runVoicePipeline, replayLastAudio } from '@processes/voiceConversation'
 
 const guildActivePipelines = new Map<string, Set<string>>();
 const guildTextChannels = new Map<string, GuildTextBasedChannel>();
+// 9-2: guild 단위 봇 발화 중 플래그
+const guildBotSpeaking = new Map<string, boolean>();
 
 const client = new Client({
   intents: [
@@ -55,26 +57,48 @@ async function handleCommand(interaction: import('discord.js').ChatInputCommandI
     const textChannel = interaction.channel as GuildTextBasedChannel;
     guildTextChannels.set(guildId!, textChannel);
     guildActivePipelines.set(guildId!, new Set());
+    guildBotSpeaking.set(guildId!, false);
 
-    connection.receiver.speaking.on('start', (speakingUserId) => {
-      const activePipelines = guildActivePipelines.get(guildId!) ?? new Set();
+    // 9-4: VoiceConnectionStatus.Ready 이벤트 수신 후 speaking 리스너 등록
+    //       Ready 이후 1000ms 쿨다운으로 잔여 패킷으로 인한 오발화 방지
+    connection.once(VoiceConnectionStatus.Ready, () => {
+      logger.info(`[${guildId}] VoiceConnection Ready — 1000ms 쿨다운 후 speaking 리스너 활성화`);
 
-      if (activePipelines.has(speakingUserId)) {
-        return;
-      }
+      setTimeout(() => {
+        connection.receiver.speaking.on('start', (speakingUserId) => {
+          // 9-2: 봇 발화 중이면 파이프라인 시작 차단
+          if (guildBotSpeaking.get(guildId!) === true) {
+            return;
+          }
 
-      const speakingMember = interaction.guild!.members.cache.get(speakingUserId);
-      if (!speakingMember || speakingMember.user.bot) {
-        return;
-      }
+          const activePipelines = guildActivePipelines.get(guildId!) ?? new Set();
 
-      activePipelines.add(speakingUserId);
+          if (activePipelines.has(speakingUserId)) {
+            return;
+          }
 
-      runVoicePipeline(connection, textChannel, speakingUserId, speakingMember.user.username).finally(
-        () => {
-          activePipelines.delete(speakingUserId);
-        },
-      );
+          const speakingMember = interaction.guild!.members.cache.get(speakingUserId);
+          if (!speakingMember || speakingMember.user.bot) {
+            return;
+          }
+
+          activePipelines.add(speakingUserId);
+
+          const setPlaying = (v: boolean) => guildBotSpeaking.set(guildId!, v);
+
+          runVoicePipeline(
+            connection,
+            textChannel,
+            speakingUserId,
+            speakingMember.user.username,
+            setPlaying,
+          ).finally(() => {
+            activePipelines.delete(speakingUserId);
+          });
+        });
+
+        logger.info(`[${guildId}] speaking 리스너 활성화 완료`);
+      }, 1000);
     });
 
     logger.info(`[${guildId}] 음성 채널 참여: ${voiceChannel.name}`);
@@ -96,6 +120,7 @@ async function handleCommand(interaction: import('discord.js').ChatInputCommandI
 
     guildActivePipelines.delete(guildId!);
     guildTextChannels.delete(guildId!);
+    guildBotSpeaking.delete(guildId!);
 
     logger.info(`[${guildId}] 음성 채널 퇴장 및 세션 종료`);
     await interaction.reply('음성 채널에서 나갔습니다. 세션이 종료되었습니다. 👋');
@@ -114,7 +139,8 @@ async function handleButton(interaction: import('discord.js').ButtonInteraction)
 
     await interaction.deferReply({ ephemeral: true });
 
-    const replayed = await replayLastAudio(connection, targetUserId);
+    const setPlaying = (v: boolean) => guildBotSpeaking.set(interaction.guildId!, v);
+    const replayed = await replayLastAudio(connection, targetUserId, setPlaying);
 
     if (replayed) {
       await interaction.editReply('다시 재생합니다. 🔁');

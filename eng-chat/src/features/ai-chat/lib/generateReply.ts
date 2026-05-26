@@ -4,7 +4,7 @@ import { SYSTEM_PROMPT } from './systemPrompt';
 import { logger } from '@shared/utils/logger';
 import type { ChatMessage, UserId } from '@shared/types';
 
-const MODEL = 'llama3-70b-8192';
+const MODEL = 'llama-3.3-70b-versatile';
 
 export async function generateReply(userId: UserId, userText: string): Promise<string> {
   const { addMessage, getHistory } = sessionStore.getState();

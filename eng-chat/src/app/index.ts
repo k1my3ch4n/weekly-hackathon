@@ -1,8 +1,12 @@
-import { Client, Events, GatewayIntentBits, GuildMember, ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Client, Events, GatewayIntentBits, GuildMember, ChannelType, GuildTextBasedChannel } from 'discord.js';
 import { joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
 import { config } from './config';
 import { logger } from '@shared/utils/logger';
 import { sessionStore } from '@entities/session';
+import { runVoicePipeline, replayLastAudio } from '@processes/voiceConversation';
+
+const guildActivePipelines = new Map<string, Set<string>>();
+const guildTextChannels = new Map<string, GuildTextBasedChannel>();
 
 const client = new Client({
   intents: [
@@ -40,12 +44,37 @@ async function handleCommand(interaction: import('discord.js').ChatInputCommandI
       return;
     }
 
-    joinVoiceChannel({
+    const connection = joinVoiceChannel({
       channelId: voiceChannel.id,
       guildId: guildId!,
       adapterCreator: interaction.guild!.voiceAdapterCreator,
       selfDeaf: false,
       selfMute: false,
+    });
+
+    const textChannel = interaction.channel as GuildTextBasedChannel;
+    guildTextChannels.set(guildId!, textChannel);
+    guildActivePipelines.set(guildId!, new Set());
+
+    connection.receiver.speaking.on('start', (speakingUserId) => {
+      const activePipelines = guildActivePipelines.get(guildId!) ?? new Set();
+
+      if (activePipelines.has(speakingUserId)) {
+        return;
+      }
+
+      const speakingMember = interaction.guild!.members.cache.get(speakingUserId);
+      if (!speakingMember || speakingMember.user.bot) {
+        return;
+      }
+
+      activePipelines.add(speakingUserId);
+
+      runVoicePipeline(connection, textChannel, speakingUserId, speakingMember.user.username).finally(
+        () => {
+          activePipelines.delete(speakingUserId);
+        },
+      );
     });
 
     logger.info(`[${guildId}] 음성 채널 참여: ${voiceChannel.name}`);
@@ -65,6 +94,9 @@ async function handleCommand(interaction: import('discord.js').ChatInputCommandI
     sessionStore.getState().clearSession(userId);
     connection.destroy();
 
+    guildActivePipelines.delete(guildId!);
+    guildTextChannels.delete(guildId!);
+
     logger.info(`[${guildId}] 음성 채널 퇴장 및 세션 종료`);
     await interaction.reply('음성 채널에서 나갔습니다. 세션이 종료되었습니다. 👋');
   }
@@ -72,8 +104,23 @@ async function handleCommand(interaction: import('discord.js').ChatInputCommandI
 
 async function handleButton(interaction: import('discord.js').ButtonInteraction) {
   if (interaction.customId.startsWith('replay:')) {
-    // TODO: Phase 5-2 — 마지막 TTS 오디오 재재생
-    await interaction.reply({ content: '(다시 듣기 기능은 곧 추가됩니다)', ephemeral: true });
+    const targetUserId = interaction.customId.split(':')[1];
+    const connection = getVoiceConnection(interaction.guildId!);
+
+    if (!connection) {
+      await interaction.reply({ content: '봇이 음성 채널에 있지 않습니다.', ephemeral: true });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    const replayed = await replayLastAudio(connection, targetUserId);
+
+    if (replayed) {
+      await interaction.editReply('다시 재생합니다. 🔁');
+    } else {
+      await interaction.editReply('재생할 이전 음성이 없습니다.');
+    }
   }
 }
 

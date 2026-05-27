@@ -4,6 +4,7 @@ import { config } from './config';
 import { logger } from '@shared/utils/logger';
 import { sessionStore } from '@entities/session';
 import { runVoicePipeline, replayLastAudio, getLastAudio } from '@processes/voiceConversation';
+import { runTextPipeline } from '@processes/textConversation';
 
 const guildActivePipelines = new Map<string, Set<string>>();
 const guildTextChannels = new Map<string, GuildTextBasedChannel>();
@@ -21,6 +22,40 @@ const client = new Client({
 
 client.once(Events.ClientReady, (readyClient) => {
   logger.info(`봇 준비 완료: ${readyClient.user.tag}`);
+});
+
+client.on(Events.MessageCreate, async (message) => {
+  if (message.author.bot) {
+    return;
+  }
+  if (!message.guildId) {
+    return;
+  }
+
+  const textChannel = guildTextChannels.get(message.guildId);
+  if (!textChannel || textChannel.id !== message.channelId) {
+    return;
+  }
+
+  if (guildBotSpeaking.get(message.guildId) === true) {
+    return;
+  }
+
+  const connection = getVoiceConnection(message.guildId);
+  if (!connection) {
+    return;
+  }
+
+  const setPlaying = (v: boolean) => guildBotSpeaking.set(message.guildId!, v);
+
+  await runTextPipeline(
+    connection,
+    textChannel,
+    message.author.id,
+    message.author.username,
+    message.content,
+    setPlaying,
+  );
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

@@ -3,7 +3,7 @@ import { joinVoiceChannel, getVoiceConnection, VoiceConnectionStatus } from '@di
 import { config } from './config';
 import { logger } from '@shared/utils/logger';
 import { sessionStore } from '@entities/session';
-import { runVoicePipeline, replayLastAudio } from '@processes/voiceConversation';
+import { runVoicePipeline, replayLastAudio, getLastAudio } from '@processes/voiceConversation';
 
 const guildActivePipelines = new Map<string, Set<string>>();
 const guildTextChannels = new Map<string, GuildTextBasedChannel>();
@@ -137,16 +137,15 @@ async function handleButton(interaction: import('discord.js').ButtonInteraction)
       return;
     }
 
-    await interaction.deferReply({ ephemeral: true });
+    if (!getLastAudio(targetUserId)) {
+      await interaction.reply({ content: '재생할 이전 음성이 없습니다.', ephemeral: true });
+      return;
+    }
+
+    await interaction.reply({ content: '다시 재생합니다. 🔁', ephemeral: true });
 
     const setPlaying = (v: boolean) => guildBotSpeaking.set(interaction.guildId!, v);
-    const replayed = await replayLastAudio(connection, targetUserId, setPlaying);
-
-    if (replayed) {
-      await interaction.editReply('다시 재생합니다. 🔁');
-    } else {
-      await interaction.editReply('재생할 이전 음성이 없습니다.');
-    }
+    replayLastAudio(connection, targetUserId, setPlaying);
   }
 }
 

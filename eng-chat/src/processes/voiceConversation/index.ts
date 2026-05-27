@@ -35,13 +35,6 @@ export async function runVoicePipeline(
       return;
     }
 
-    // 9-9: 비영어 입력 감지 시 안내 후 종료
-    if (transcription.detectedLanguage && transcription.detectedLanguage !== 'en') {
-      logger.info(`[Pipeline:${username}] 비영어 감지 (${transcription.detectedLanguage}) — 파이프라인 종료`);
-      await textChannel.send('Please speak in English! 영어로 말씀해 주세요. 😊');
-      return;
-    }
-
     logger.info(`[Pipeline:${username}] STT 완료 → LLM 요청 + 유저 발화 번역 병렬 처리`);
 
     // 9-6: LLM 생성과 유저 발화 번역을 병렬 처리

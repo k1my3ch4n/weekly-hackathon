@@ -15,7 +15,6 @@ export interface TranscriptionResult {
   text: string;
   userId: UserId;
   timestamp: number;
-  detectedLanguage?: string;
 }
 
 export interface TTSResult {

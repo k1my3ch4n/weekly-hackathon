@@ -2,7 +2,7 @@
 
 Discord 음성 채널에서 AI와 실시간으로 영어 회화를 연습하는 봇입니다.
 
-[**봇 초대하기 →**](https://discord.com/oauth2/authorize?client_id=150871632666584834&permissions=2184251392&integration_type=0&scope=applications.commands+bot)
+[**봇 초대하기 →**](https://discord.com/oauth2/authorize?client_id=1508716326665846834&permissions=2184251392&integration_type=0&scope=applications.commands+bot)
 
 ---
 

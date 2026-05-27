@@ -6,13 +6,10 @@ import { generateReply } from '@features/ai-chat';
 import { synthesizeSpeech, playAudioBuffer } from '@features/tts-speaker';
 import { translateToKorean } from '@shared/utils/translator';
 import { logger } from '@shared/utils/logger';
+import { getLastAudio, setLastAudio } from '@entities/audio';
 import type { UserId } from '@shared/types';
 
-const lastAudioMap = new Map<UserId, Buffer>();
-
-export function getLastAudio(userId: UserId): Buffer | undefined {
-  return lastAudioMap.get(userId);
-}
+export { getLastAudio };
 
 export async function runVoicePipeline(
   connection: VoiceConnection,
@@ -52,7 +49,7 @@ export async function runVoicePipeline(
       translateToKorean(replyText),
     ]);
 
-    lastAudioMap.set(userId, ttsResult.audioBuffer);
+    setLastAudio(userId, ttsResult.audioBuffer);
 
     // 9-1: 음성 재생 전에 AI 텍스트 + [다시 듣기] 버튼 먼저 전송
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -94,7 +91,7 @@ export async function replayLastAudio(
   userId: UserId,
   setPlaying: (v: boolean) => void,
 ): Promise<boolean> {
-  const audioBuffer = lastAudioMap.get(userId);
+  const audioBuffer = getLastAudio(userId);
 
   if (!audioBuffer) {
     return false;

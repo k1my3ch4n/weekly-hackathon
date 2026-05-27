@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.19.2",
+    "tsx": "^4.19.0",
     "@elevenlabs/elevenlabs-js": "^2.49.1",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
@@ -25,7 +26,6 @@
     "@types/fluent-ffmpeg": "^2.1.24",
     "@types/node": "^22.0.0",
     "nodemon": "^3.1.4",
-    "tsx": "^4.19.0",
     "typescript": "^5.5.0"
   }
 }

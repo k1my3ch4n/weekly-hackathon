@@ -15,7 +15,7 @@
 
 | 순서    | 프로젝트            | 설명                                        | 배포 |
 | ------- | ------------------- | ------------------------------------------- | ---- |
-| 첫 번째 | [영-차](./eng-chat) | Groq API 기반 디스코드 AI 영어 회화 튜터 봇 | -    |
+| 첫 번째 | [영-차](./eng-chat) | Groq API 기반 디스코드 AI 영어 회화 튜터 봇 | [Discord Bot](https://discord.com/oauth2/authorize?client_id=1508716326665846834&permissions=2184251392&integration_type=0&scope=applications.commands+bot) |
 
 ## 시작하기
 

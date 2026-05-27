@@ -19,7 +19,7 @@ export const config = {
   groq: {
     apiKey: requireEnv('GROQ_API_KEY'),
   },
-  elevenlabs: {
-    apiKey: requireEnv('ELEVENLABS_API_KEY'),
+  groqTts: {
+    voice: process.env.GROQ_TTS_VOICE ?? 'Aaliyah-PlayAI',
   },
 };

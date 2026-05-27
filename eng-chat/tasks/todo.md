@@ -84,10 +84,10 @@
 
 ## Phase 5: processes 레이어 구축
 
-- [ ] **5-1** `processes/voiceConversation/index.ts` — 전체 파이프라인 오케스트레이션
+- [x] **5-1** `processes/voiceConversation/index.ts` — 전체 파이프라인 오케스트레이션
   - 순서: 음성 수신 → 무음 감지 → PCM→WAV → STT → 채팅창 출력 → LLM → TTS → 음성 송출 → 채팅창 출력 + [다시 듣기] 버튼
   - 단계별 에러 핸들링 및 로깅
-- [ ] **5-2** [다시 듣기 🔁] 버튼 클릭 시 마지막 TTS 오디오 재재생 로직 구현
+- [x] **5-2** [다시 듣기 🔁] 버튼 클릭 시 마지막 TTS 오디오 재재생 로직 구현
 
 ---
 
@@ -126,6 +126,77 @@
 
 ---
 
+## Phase 9: UX 개선 및 버그 수정
+
+### 9-1. AI 텍스트를 음성보다 먼저 출력
+
+- [x] **9-1** `processes/voiceConversation/index.ts` 수정
+  - 현재: TTS 재생(`playAudioBuffer`) 완료 후 AI 텍스트 + [다시 듣기] 버튼 전송
+  - 변경: TTS 재생 **전에** AI 텍스트 + [다시 듣기] 버튼 먼저 전송 → 이후 `playAudioBuffer` 호출
+  - 효과: 유저가 음성을 들으면서 동시에 텍스트 확인 가능
+
+### 9-2. 봇 발화 중 마이크 입력 차단 (다시 듣기 피드백 루프 버그)
+
+- [x] **9-2** `app/index.ts` 수정
+  - guild 단위 `isBotSpeaking: Map<string, boolean>` 플래그 추가
+  - `speaking.on('start')` 핸들러에서 `isBotSpeaking` 체크 → true면 파이프라인 시작 차단
+- [x] **9-3** `processes/voiceConversation/index.ts` 수정
+  - `runVoicePipeline`: `playAudioBuffer` 호출 전 `isBotSpeaking = true` 설정, 완료 후 `false`로 복원
+  - `replayLastAudio`: 동일하게 `isBotSpeaking` 플래그 제어
+  - 플래그는 콜백 또는 파라미터로 주입 (`(setPlaying: (v: boolean) => void)`)
+
+### 9-3. 채널 입장 직후 오디오 수신 버그 (입장 시 잔여 패킷 처리)
+
+- [x] **9-4** `app/index.ts` 수정
+  - `joinVoiceChannel` 후 즉시 speaking 리스너 등록하는 현재 방식 변경
+  - `VoiceConnectionStatus.Ready` 이벤트 수신 후 speaking 리스너 등록
+  - Ready 이후에도 일정 시간(1,000ms) 쿨다운을 두고 리스너 활성화
+  - 효과: 입장 직후 Discord가 전송하는 잔여 오디오 패킷으로 인한 오발화 방지
+
+### 9-4. 유저 발화 및 AI 답변 번역 표시
+
+- [x] **9-5** `shared/utils/translator.ts` 신규 생성
+  - `translateToKorean(text: string): Promise<string>` 함수 구현
+  - Groq LLM(`llama-3.3-70b-versatile`) 활용, 단순 번역 전용 시스템 프롬프트 사용
+  - 입력이 이미 한국어인 경우 원문 그대로 반환
+- [x] **9-6** `processes/voiceConversation/index.ts` 수정
+  - 유저 발화 메세지: transcript 번역 후 함께 표시
+    ```
+    🎙️ **username**: transcript
+    > 번역: 한국어 번역 텍스트
+    ```
+  - AI 답변 메세지: replyText 번역 후 함께 표시
+    ```
+    🤖 **AI Tutor**: replyText
+    > 번역: 한국어 번역 텍스트
+    ```
+  - 번역은 LLM 응답 생성과 병렬(`Promise.all`)로 처리하여 지연 최소화
+
+### 9-5. 비영어 입력 감지 및 안내
+
+- [x] **9-7** `features/stt-transcriber/lib/transcribe.ts` 수정
+  - 현재 `language: 'en'` 강제 설정 제거
+  - `response_format: 'verbose_json'`으로 변경하여 Whisper 언어 감지 결과 수신
+  - 반환 타입 `TranscriptionResult`에 `detectedLanguage: string` 필드 추가
+- [x] **9-8** `shared/types/index.ts` 수정
+  - `TranscriptionResult`에 `detectedLanguage?: string` 필드 추가
+- [x] **9-9** `processes/voiceConversation/index.ts` 수정
+  - STT 결과의 `detectedLanguage`가 `'en'`이 아닌 경우:
+    - LLM / TTS 호출 없이 파이프라인 조기 종료
+    - 채팅창에 안내 메세지 전송: `"Please speak in English! 영어로 말씀해 주세요. 😊"`
+
+---
+
+## Phase 8: 통합 테스트 & 최적화
+
+- [ ] **8-1** End-to-end 흐름 테스트 (실제 Discord 서버에서 음성 입력 → 응답 확인)
+- [ ] **8-2** 응답 시간 측정 — 목표: 발화 종료 후 1.5초 이내 STT + LLM 시작
+- [ ] **8-3** 에러 시나리오 처리 확인
+  - API 호출 실패, 음성 연결 끊김, 빈 transcript 등
+- [ ] **8-4** `README.md` 작성 (설치 방법, 환경 변수 목록, 실행 방법)
+
+---
+
 ## 현재 상태
 
 - [x] 기획서 작성 완료 (`eng-chat/.claude/CLAUDE.md`)
@@ -135,8 +206,9 @@
 - [x] Phase 6 완료
 - [x] Phase 7 일부 완료 (7-3 미완)
 - [x] Phase 4 완료
-- [ ] Phase 5 진행 예정
+- [x] Phase 5 완료
 - [ ] Phase 8 진행 예정
+- [ ] Phase 9 진행 예정
 
 ## 의존 관계 요약
 

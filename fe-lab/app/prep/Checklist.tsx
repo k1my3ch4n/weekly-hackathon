@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const GROUPS = [
   {
@@ -42,21 +42,13 @@ const FLAT_ITEMS = GROUPS.flatMap((group) =>
 const TOTAL = FLAT_ITEMS.length;
 
 export default function Checklist() {
-  const [checked, setChecked] = useState<boolean[]>(() =>
-    Array(TOTAL).fill(false),
-  );
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
+  const [checked, setChecked] = useState<boolean[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed: unknown = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length === TOTAL) {
-        setChecked(parsed as boolean[]);
-      }
-    }
-  }, []);
+    const parsed: unknown = saved ? JSON.parse(saved) : null;
+    return Array.isArray(parsed) && parsed.length === TOTAL
+      ? (parsed as boolean[])
+      : (Array(TOTAL).fill(false) as boolean[]);
+  });
 
   const toggle = (index: number) => {
     setChecked((prev) => {
@@ -68,20 +60,23 @@ export default function Checklist() {
   };
 
   const resetAll = () => {
-    const next = Array(TOTAL).fill(false);
-    setChecked(next);
+    const next = Array(TOTAL).fill(false) as boolean[];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    setChecked(next);
   };
 
   const doneCount = checked.filter(Boolean).length;
 
-  let globalIdx = 0;
+  const groupStartIndices = GROUPS.reduce<number[]>((acc, _group, i) => {
+    acc.push(i === 0 ? 0 : acc[i - 1] + GROUPS[i - 1].items.length);
+    return acc;
+  }, []);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <span className="font-mono text-xs text-text-muted">
-          {mounted ? `${doneCount} / ${TOTAL} 완료` : `0 / ${TOTAL} 완료`}
+          {`${doneCount} / ${TOTAL} 완료`}
         </span>
         <button
           onClick={resetAll}
@@ -91,9 +86,9 @@ export default function Checklist() {
         </button>
       </div>
 
-      {GROUPS.map((group) => {
-        const startIdx = globalIdx;
-        globalIdx += group.items.length;
+      {GROUPS.map((group, groupIdx) => {
+        const startIdx = groupStartIndices[groupIdx];
+
         return (
           <div key={group.title}>
             <h3 className="font-mono text-xs font-bold text-text-muted uppercase tracking-wide mb-3">
@@ -102,7 +97,7 @@ export default function Checklist() {
             <ul className="space-y-2">
               {group.items.map((item, itemIdx) => {
                 const idx = startIdx + itemIdx;
-                const isChecked = mounted && checked[idx];
+                const isChecked = checked[idx];
                 return (
                   <li key={idx}>
                     <label className="flex items-start gap-3 cursor-pointer group">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import Checklist from "./Checklist";
+import ChecklistClient from "./ChecklistClient";
 import {
   HIGH_TOPICS,
   MEDIUM_TOPICS,
@@ -121,12 +121,12 @@ export default function PrepPage() {
             </a>
           ))}
         </div>
-        <a
+        <Link
           href="/"
           className="ml-auto font-mono text-xs text-text-muted hover:text-text-secondary transition-colors shrink-0"
         >
           ← Fe-Lab
-        </a>
+        </Link>
       </nav>
 
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-14">
@@ -332,7 +332,7 @@ export default function PrepPage() {
         <section>
           <SectionHeading id="checklist">4. 면접 당일 체크리스트</SectionHeading>
           <div className="px-4 py-5 rounded-lg border border-border-subtle bg-bg-surface">
-            <Checklist />
+            <ChecklistClient />
           </div>
         </section>
 

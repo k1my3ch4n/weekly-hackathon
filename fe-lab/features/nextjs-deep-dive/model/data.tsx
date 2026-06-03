@@ -112,11 +112,11 @@ export const interviewQuestions: InterviewQuestion[] = [
     question: "revalidatePath와 revalidateTag의 차이는 무엇인가요?",
     answer: (
       <>
-        <InlineCode>revalidatePath('/properties')</InlineCode>는 특정 경로의
+        <InlineCode>{`revalidatePath('/properties')`}</InlineCode>는 특정 경로의
         캐시를 무효화합니다. 해당 경로와 하위 경로의 캐시가 초기화됩니다.
         <br />
         <br />
-        <InlineCode>revalidateTag('properties-list')</InlineCode>는 특정 태그로
+        <InlineCode>{`revalidateTag('properties-list')`}</InlineCode>는 특정 태그로
         묶인 모든 fetch 캐시를 무효화합니다. 태그는{" "}
         <InlineCode>{`fetch(url, { next: { tags: ['properties-list'] } })`}</InlineCode>
         로 부여합니다. 여러 경로에 걸쳐 있는 데이터(예: 사이드바 매물 수)를 한

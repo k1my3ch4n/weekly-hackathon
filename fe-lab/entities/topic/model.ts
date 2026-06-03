@@ -345,6 +345,23 @@ const topicList: Topic[] = [
     color: "var(--accent-violet)",
     implemented: true,
   },
+  // Framework (신규 카테고리)
+  {
+    id: "react-query",
+    name: "React Query",
+    category: "Framework",
+    difficulty: "mid",
+    color: "var(--accent-amber)",
+    implemented: true,
+  },
+  {
+    id: "nextjs-deep-dive",
+    name: "Next.js 심화",
+    category: "Framework",
+    difficulty: "senior",
+    color: "var(--accent-cyan)",
+    implemented: true,
+  },
 ];
 
 export function getCategories(): Category[] {
@@ -377,6 +394,7 @@ export const categoryIcons: Record<string, string> = {
   Security: "SC",
   "Web API": "WA",
   Accessibility: "A11",
+  Framework: "FW",
 };
 
 export const difficultyConfig: Record<

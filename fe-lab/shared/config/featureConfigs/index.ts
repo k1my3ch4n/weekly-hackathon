@@ -8,6 +8,7 @@ import { cssConfigs } from "./css";
 import { securityConfigs } from "./security";
 import { webApiConfigs } from "./web-api";
 import { accessibilityConfigs } from "./accessibility";
+import { frameworkConfigs } from "./framework";
 
 export type { FeatureConfig } from "./types";
 
@@ -22,4 +23,5 @@ export const featureConfigs = {
   ...securityConfigs,
   ...webApiConfigs,
   ...accessibilityConfigs,
+  ...frameworkConfigs,
 };

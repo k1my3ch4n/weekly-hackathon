@@ -17,6 +17,12 @@
 | ------- | ------------------- | ------------------------------------------- | ---- |
 | 첫 번째 | [영-차](./eng-chat) | Groq API 기반 디스코드 AI 영어 회화 튜터 봇 | [Discord Bot](https://discord.com/oauth2/authorize?client_id=1508716326665846834&permissions=2184251392&integration_type=0&scope=applications.commands+bot) |
 
+### 6월
+
+| 순서    | 프로젝트                                                | 설명                                              | 배포 |
+| ------- | ------------------------------------------------------- | ------------------------------------------------- | ---- |
+| 첫 번째 | [create-k1my3ch4n-setup](./setup-package) | FSD 구조 기반 프론트엔드 프로젝트 스캐폴딩 CLI 도구 | [npm](https://www.npmjs.com/package/create-k1my3ch4n-setup) |
+
 ## 시작하기
 
 각 프로젝트 폴더로 이동 후 개별 실행합니다.

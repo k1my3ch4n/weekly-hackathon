@@ -25,9 +25,10 @@ create-k1my3ch4n-setup/
 │   │   ├── package.js        ← package.json 동적 생성
 │   │   └── gitignore.js      ← .gitignore 생성
 │   └── templates/
-│       ├── CLAUDE.md         ← Claude 설정 템플릿
-│       ├── vite/             ← Vite + React 템플릿
-│       └── next/             ← Next.js App Router 템플릿
+│       ├── CLAUDE.md              ← Claude 설정 템플릿
+│       ├── vite/                  ← Vite + React 템플릿
+│       └── next/
+│           └── src/app/           ← Next.js App Router 템플릿 (src 통합)
 └── package.json
 ```
 

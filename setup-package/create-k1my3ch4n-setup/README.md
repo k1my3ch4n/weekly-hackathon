@@ -54,11 +54,11 @@ my-app/
 
 ```
 my-app/
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
 ├── src/
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── globals.css
 │   ├── pages/index.ts
 │   ├── widgets/index.ts
 │   ├── features/index.ts

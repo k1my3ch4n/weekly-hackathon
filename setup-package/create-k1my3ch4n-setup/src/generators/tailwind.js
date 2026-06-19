@@ -2,12 +2,15 @@ import fs from "fs-extra";
 import path from "path";
 
 export async function generateTailwind(targetDir, framework) {
+  const contentPaths =
+    framework === "next"
+      ? `'./src/**/*.{js,ts,jsx,tsx}'`
+      : `'./index.html',\n    './src/**/*.{js,ts,jsx,tsx}'`;
+
   const tailwindConfig = `/** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-    ${framework === "next" ? "'./app/**/*.{js,ts,jsx,tsx}'," : ""}
+    ${contentPaths}
   ],
   theme: {
     extend: {},

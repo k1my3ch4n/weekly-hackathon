@@ -31,7 +31,7 @@ export async function generateFramework(
       await fs.remove(path.join(targetDir, "tsconfig.json"));
     }
     if (!useTailwind) {
-      await fs.writeFile(path.join(targetDir, "app", "globals.css"), "");
+      await fs.writeFile(path.join(targetDir, "src", "app", "globals.css"), "");
     }
   } else {
     if (useTypeScript) {

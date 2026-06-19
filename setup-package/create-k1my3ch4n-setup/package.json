@@ -15,6 +15,9 @@
     "tailwind",
     "typescript"
   ],
+  "scripts": {
+    "check": "node --check bin/index.js src/index.js src/generator.js src/prompts.js src/generators/fsd.js src/generators/framework.js src/generators/tailwind.js src/generators/package.js src/generators/gitignore.js"
+  },
   "bin": {
     "create-k1my3ch4n-setup": "bin/index.js"
   },

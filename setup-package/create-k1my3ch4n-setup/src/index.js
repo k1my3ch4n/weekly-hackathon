@@ -10,22 +10,25 @@ export async function run() {
   const context = await getProjectOptions(projectNameArg);
 
   const spinner = p.spinner();
-  spinner.start("프로젝트 생성 중...");
 
-  const targetDir = await generate(context);
+  try {
+    spinner.start("프로젝트 생성 중...");
+    const targetDir = await generate(context);
+    spinner.stop("프로젝트 생성 완료");
 
-  spinner.stop("프로젝트 생성 완료");
+    spinner.start(`${context.packageManager} install 중...`);
+    execSync(getInstallCommand(context.packageManager), {
+      cwd: targetDir,
+      stdio: "ignore",
+    });
+    spinner.stop("설치 완료");
 
-  spinner.start(`${context.packageManager} install 중...`);
-
-  execSync(getInstallCommand(context.packageManager), {
-    cwd: targetDir,
-    stdio: "ignore",
-  });
-
-  spinner.stop("설치 완료");
-
-  p.outro(
-    `완료! 다음 명령어로 시작하세요:\n\n  cd ${context.projectName}\n  ${context.packageManager} ${context.packageManager === "npm" ? "run " : ""}dev`,
-  );
+    p.outro(
+      `완료! 다음 명령어로 시작하세요:\n\n  cd ${context.projectName}\n  ${context.packageManager} ${context.packageManager === "npm" ? "run " : ""}dev`,
+    );
+  } catch (error) {
+    spinner.stop("오류 발생");
+    p.cancel(`오류: ${error.message}`);
+    process.exit(1);
+  }
 }

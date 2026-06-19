@@ -47,7 +47,7 @@ async function generateClaudeMd(targetDir) {
   const claudeDir = path.join(targetDir, ".claude");
   await fs.ensureDir(claudeDir);
   await fs.copy(
-    path.join(__dirname, "../templates/CLAUDE.md"),
+    path.join(__dirname, "./templates/CLAUDE.md"),
     path.join(claudeDir, "CLAUDE.md"),
   );
 }

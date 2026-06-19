@@ -1,14 +1,27 @@
 {
   "name": "create-k1my3ch4n-setup",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Frontend project scaffolding CLI with FSD structure",
   "type": "module",
+  "author": "k1my3ch4n",
+  "license": "MIT",
+  "keywords": [
+    "cli",
+    "scaffolding",
+    "fsd",
+    "react",
+    "vite",
+    "nextjs",
+    "tailwind",
+    "typescript"
+  ],
   "bin": {
     "create-k1my3ch4n-setup": "bin/index.js"
   },
   "files": [
     "bin",
-    "src"
+    "src",
+    "README.md"
   ],
   "dependencies": {
     "@clack/prompts": "^0.9.1",

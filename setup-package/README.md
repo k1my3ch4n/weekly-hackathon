@@ -8,109 +8,117 @@ npx create-k1my3ch4n-setup my-app
 
 ---
 
-## 동작 원리
-
-### 1. npx create-\* 컨벤션
-
-`npx create-xxx` 형태는 npm/npx의 약속된 컨벤션이다.
-`npx`는 npm 레지스트리에서 `create-xxx` 패키지를 찾아 임시 다운로드 후 실행한다.
-
-### 2. package.json의 bin 필드
-
-```json
-"bin": {
-  "create-k1my3ch4n-setup": "bin/index.js"
-}
-```
-
-패키지가 실행될 때 어떤 파일을 진입점으로 쓸지 선언한다.
-`npm link` 또는 전역 설치 시 이 파일이 CLI 명령어로 등록된다.
-
-### 3. 실행 흐름
+## 패키지 구조
 
 ```
-npx create-k1my3ch4n-setup my-app
-         │
-         ▼
-    bin/index.js          ← #!/usr/bin/env node 로 Node.js 실행 지시
-         │
-         ▼
-    src/index.js          ← run() 호출
-         │
-         ├── src/prompts.js    ← @clack/prompts 로 터미널 질문 표시
-         │        │
-         │        └── context 객체 반환 { framework, useTailwind, ... }
-         │
-         └── src/generator.js  ← context 받아서 폴더/파일 생성
-                  │
-                  ├── src/templates/ 파일 복사 (fs-extra)
-                  ├── FSD 폴더 생성 (pages, widgets, features, entities, shared)
-                  ├── package.json 동적 생성
-                  ├── git init 실행
-                  └── 선택한 패키지 매니저로 install 실행
-```
-
----
-
-## 선택 옵션
-
-| 항목          | 선택지                        |
-| ------------- | ----------------------------- |
-| 프레임워크    | Vite (React) / Next.js / 없음 |
-| TypeScript    | yes / no                      |
-| Tailwind CSS  | yes / no                      |
-| Claude 설정   | yes / no                      |
-| 패키지 매니저 | pnpm / npm / yarn             |
-
----
-
-## 생성되는 구조
-
-```
-my-app/
+create-k1my3ch4n-setup/
+├── bin/
+│   └── index.js              ← CLI 진입점
 ├── src/
-│   ├── pages/index.ts       ← FSD 레이어
-│   ├── widgets/index.ts
-│   ├── features/index.ts
-│   ├── entities/index.ts
-│   └── shared/index.ts
-├── .claude/
-│   └── CLAUDE.md            ← Claude 선택 시
-├── tailwind.config.ts       ← Tailwind 선택 시
-├── tsconfig.json            ← TypeScript 선택 시
-├── .gitignore
+│   ├── index.js              ← run() — 전체 흐름 오케스트레이션
+│   ├── prompts.js            ← @clack/prompts 기반 대화형 질문
+│   ├── generator.js          ← context 받아서 파일/폴더 생성
+│   ├── generators/
+│   │   ├── fsd.js            ← FSD 레이어 폴더 생성
+│   │   ├── framework.js      ← 프레임워크 템플릿 복사
+│   │   ├── tailwind.js       ← tailwind.config.ts / postcss.config.js 생성
+│   │   ├── package.js        ← package.json 동적 생성
+│   │   └── gitignore.js      ← .gitignore 생성
+│   └── templates/
+│       ├── CLAUDE.md         ← Claude 설정 템플릿
+│       ├── vite/             ← Vite + React 템플릿
+│       └── next/             ← Next.js App Router 템플릿
 └── package.json
 ```
 
 ---
 
-## 주요 파일
+## 실행 흐름
 
-| 파일                  | 역할                                        |
-| --------------------- | ------------------------------------------- |
-| `bin/index.js`        | CLI 진입점. `#!/usr/bin/env node` 선언 필수 |
-| `src/prompts.js`      | `@clack/prompts` 기반 대화형 질문 흐름      |
-| `src/generator.js`    | 선택 결과를 받아 파일/폴더 실제 생성        |
-| `src/templates/vite/` | Vite + React 템플릿 파일                    |
-| `src/templates/next/` | Next.js App Router 템플릿 파일              |
+```
+npx create-k1my3ch4n-setup my-app
+         │
+         ▼
+    bin/index.js
+         │
+         ▼
+    src/index.js              ← run()
+         │
+         ├── src/prompts.js   ← 질문 → context 반환
+         │                       { projectName, framework, useTypeScript,
+         │                         useTailwind, useClaude, packageManager }
+         │
+         └── src/generator.js ← generate(context)
+                  │
+                  ├── generateFSD()         템플릿 없이 코드로 생성
+                  ├── generateFramework()   src/templates/ 복사
+                  ├── generateTailwind()    코드로 생성
+                  ├── generateClaudeMd()    src/templates/CLAUDE.md 복사
+                  ├── generateGitignore()   코드로 생성
+                  ├── generatePackageJson() 코드로 생성
+                  └── git init + [pm] install
+```
 
 ---
 
-## 로컬 테스트
+## 확장 계획
+
+### 구현 현황
+
+| 기능                                              | 상태 |
+| ------------------------------------------------- | ---- |
+| Vite (React) / Next.js 템플릿                     | ✅   |
+| FSD 폴더 구조                                     | ✅   |
+| TypeScript 설정                                   | ✅   |
+| Tailwind CSS 설정                                 | ✅   |
+| Claude 설정 파일                                  | ✅   |
+| 스타일링 옵션 (CSS Modules, styled-components 등) | ☐    |
+| 린팅 / 포맷팅 (ESLint, Prettier, Husky)           | ☐    |
+
+### 새 Generator 추가 방법
+
+기능별로 파일이 분리되어 있어 새 옵션을 추가할 때 건드리는 파일이 최소화됩니다.
+
+```
+1. src/generators/foo.js    ← 파일 생성 로직 작성
+2. src/prompts.js           ← 사용자 질문 추가
+3. src/generator.js         ← generate() 안에서 호출
+```
+
+예시 — ESLint generator 추가:
+
+```js
+// src/generators/eslint.js
+export async function generateEslint(targetDir, framework) {
+  // eslint.config.js 생성 로직
+}
+```
+
+```js
+// src/generator.js
+import { generateEslint } from "./generators/eslint.js";
+
+if (useEslint) {
+  await generateEslint(targetDir, framework);
+}
+```
+
+---
+
+## 로컬 개발
 
 ```bash
 cd create-k1my3ch4n-setup
 npm install
 npm link
 
-# 다른 폴더에서
+# 다른 폴더에서 실행 테스트
 npx create-k1my3ch4n-setup my-app
 ```
 
-## npm 배포
+## 배포
 
 ```bash
+cd create-k1my3ch4n-setup
 npm publish
 ```
-
-배포 후 누구나 `npx create-k1my3ch4n-setup` 으로 사용 가능.

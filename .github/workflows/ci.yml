@@ -17,7 +17,31 @@ on:
       - 'setup-package/**'
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      fe-lab: ${{ steps.filter.outputs.fe-lab }}
+      vox-task: ${{ steps.filter.outputs.vox-task }}
+      eng-chat: ${{ steps.filter.outputs.eng-chat }}
+      setup-package: ${{ steps.filter.outputs.setup-package }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            fe-lab:
+              - 'fe-lab/**'
+            vox-task:
+              - 'vox-task/**'
+            eng-chat:
+              - 'eng-chat/**'
+            setup-package:
+              - 'setup-package/**'
+
   build-fe-lab:
+    needs: changes
+    if: needs.changes.outputs.fe-lab == 'true'
     runs-on: ubuntu-latest
 
     defaults:
@@ -46,6 +70,8 @@ jobs:
         run: npm run build
 
   build-vox-task:
+    needs: changes
+    if: needs.changes.outputs.vox-task == 'true'
     runs-on: ubuntu-latest
 
     defaults:
@@ -71,6 +97,8 @@ jobs:
         run: npm run build
 
   build-setup-package:
+    needs: changes
+    if: needs.changes.outputs.setup-package == 'true'
     runs-on: ubuntu-latest
 
     defaults:
@@ -93,6 +121,8 @@ jobs:
         run: npm run check
 
   build-eng-chat:
+    needs: changes
+    if: needs.changes.outputs.eng-chat == 'true'
     runs-on: ubuntu-latest
 
     defaults:

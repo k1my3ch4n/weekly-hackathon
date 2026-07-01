@@ -48,12 +48,13 @@ export const TECH_INTERVIEW_OVERVIEW = {
 export const PORTFOLIO_SCRIPT: ScriptSection[] = [
   {
     label: "오프닝 — 개발자 스토리",
-    duration: "30–40초",
+    duration: "40–50초",
     lines: [
-      "저는 '직접 만들어보며 이해하는' 방식으로 성장해왔습니다. 불편함을 발견하면 바로 프로토타입을 만들어보고, 운영하면서 생기는 문제를 기술적으로 해결해온 개발자입니다.",
-      "그 방식이 가장 잘 드러나는 산출물로, 직접 설계하고 현재도 운영 중인 블로그 & 포트폴리오 프로젝트를 소개하겠습니다.",
+      "저는 '직접 만들어보며 이해하는' 방식으로 성장해왔습니다. 불편함을 발견하면 바로 만들어보고, 운영하면서 생기는 문제를 기술적으로 해결하며 지속적으로 개선해온 개발자입니다.",
+      "처음 Vite 기반으로 시작한 블로그를 Next.js로 직접 전환하면서, SSR · ISR · SSG를 모두 실제 프로덕트에 적용하며 렌더링 전략을 깊이 이해하게 됐습니다.",
+      "그 경험이 가장 잘 드러나는 산출물로, 직접 설계하고 현재도 운영 중인 블로그 & 포트폴리오 프로젝트를 소개하겠습니다.",
     ],
-    tip: "AIGuru가 1차에서 강조한 '만드는 사람' 키워드와 연결되는 오프닝",
+    tip: "AIGuru가 1차에서 강조한 '만드는 사람' 키워드 + Vite→Next 전환으로 기술 성장 스토리 연결",
   },
   {
     label: "프로젝트 개요",
@@ -73,14 +74,14 @@ export const PORTFOLIO_SCRIPT: ScriptSection[] = [
     tip: "'잘못 설정된 걸 스스로 발견하고 고쳤다'는 흐름 — 기술 결정에 관찰이 선행됨을 보여주기",
   },
   {
-    label: "결정 2 — PostgreSQL → 정적 상수",
+    label: "결정 2 — GraphQL 서버 → Next.js → 정적 상수",
     duration: "50초",
     lines: [
-      "태그 시스템 구현에 배열 타입이 필요해 PostgreSQL의 TEXT[]를 선택했는데, 운영하다 보니 블로그 데이터가 사실상 변하지 않는다는 걸 깨달았습니다.",
-      "런타임에 DB에 붙는 것 자체가 안정성 리스크였고, pg와 dotenv 패키지를 완전히 제거해 정적 상수로 관리하는 더 단순한 방식으로 전환했습니다.",
-      "'쓸데없이 복잡하게 만들었다'는 인식과 간소화 결정이 저에게 가장 큰 배움이었습니다.",
+      "처음엔 Express + Apollo Server + PostgreSQL을 Docker로 패키징해 GCP에 별도 서버로 직접 운영했습니다. 태그 필터링을 위해 PostgreSQL의 TEXT[]를 의도적으로 선택했고, GraphQL로 API를 설계했습니다.",
+      "그런데 운영하다 보니 이 서버가 변하지 않는 데이터만 serve하고 있었습니다. 먼저 별도 서버를 Next.js API Route로 통합했고, 최종적으로는 서버 자체를 제거해 정적 상수로 전환했습니다.",
+      "'쓸데없이 복잡하게 만들었다'는 인식과 단계적 간소화가 저에게 가장 큰 배움이었습니다.",
     ],
-    tip: "오버엔지니어링을 스스로 인식하고 간소화한 결정 — '지금 필요한 것만'이라는 판단 기준을 보여주기",
+    tip: "3단계 진화 (독립 서버 → 통합 → 제거) — 백엔드 면접관은 이 의사결정 흐름을 더 명확하게 이해하고 평가할 수 있음",
   },
   {
     label: "결정 3 — Server Component 마이그레이션",
@@ -128,7 +129,7 @@ export const TECH_QA_GROUPS: QAGroup[] = [
       },
       {
         q: "GraphQL을 Next.js API Route로 통합했는데, 다음에도 GraphQL을 선택할 건가요?",
-        a: "팀이 1-2명인 소규모 프로젝트에서는 REST나 Next.js Server Actions가 더 적합할 것 같습니다. GraphQL은 여러 클라이언트가 다양한 형태로 데이터를 요청해야 할 때 가치가 있는데, 이 프로젝트에선 그 필요가 없었습니다.",
+        a: "처음엔 Express + Apollo Server로 독립 서버를 직접 구축해 GCP에 운영했습니다. 그 과정에서 GraphQL이 여러 클라이언트가 다양한 형태로 데이터를 요청할 때 진가를 발휘한다는 걸 체감했고, 블로그처럼 클라이언트가 하나인 경우엔 오버스펙이었습니다. 소규모 프로젝트에서는 REST나 Next.js Server Actions가 더 적합하다고 판단합니다.",
       },
     ],
   },
@@ -294,6 +295,163 @@ export const TECH_CHECKLIST_GROUPS: ChecklistGroup[] = [
     ],
   },
 ];
+
+export type TechTranslation = {
+  decision: string;
+  frontend: string;
+  backend: string;
+};
+
+export type AppealPoint = {
+  label: string;
+  title: string;
+  body: string;
+  quote: string;
+};
+
+export type StoryFrame = {
+  description: string;
+  steps: string[];
+  example: { label: string; text: string; note: string };
+};
+
+export const BACKEND_TECH_TRANSLATIONS: TechTranslation[] = [
+  {
+    decision: "On-demand ISR",
+    frontend: "revalidatePath를 콘텐츠 변경 시 호출",
+    backend:
+      "캐시 무효화를 이벤트 기반으로 설계해 서버 재빌드 낭비 제거",
+  },
+  {
+    decision: "GraphQL 서버 → 정적 상수",
+    frontend: "DB를 정적 상수로 전환",
+    backend:
+      "Express + Apollo + PostgreSQL Docker 서버를 직접 구축·운영했으나, 불변 데이터에 독립 서버 유지 비용이 불합리하다 판단해 단계적으로 제거",
+  },
+  {
+    decision: "Server Component",
+    frontend: "Props로 데이터 내려줌",
+    backend:
+      "클라이언트-서버 왕복 요청을 줄이기 위해 데이터 fetching을 서버 쪽으로 올림",
+  },
+];
+
+export const BACKEND_APPEAL_POINTS: AppealPoint[] = [
+  {
+    label: "풀스택 경험",
+    title: "백엔드 서버를 직접 구축하고 운영한 경험",
+    body: "Express + Apollo Server + PostgreSQL 서버를 Docker로 패키징해 GCP에 직접 배포·운영했습니다. pg.Pool 커넥션 풀링, TEXT[] 타입 선택, API Key 인증 미들웨어, GraphQL 스키마 설계까지 직접 구현했습니다. 이후 스스로 필요 없다고 판단해 단계적으로 제거한 경험이 있습니다.",
+    quote: "API를 소비하는 것에서 API를 설계·운영·제거하는 경험까지",
+  },
+  {
+    label: "협업 능력",
+    title: "백엔드 협업 능력을 직접 드러내기",
+    body: "스토리북을 도입한 이유 중 하나가, 백엔드 없이도 컴포넌트를 독립적으로 테스트할 수 있어서 API가 완성되기 전에 프론트 작업을 완료할 수 있었기 때문입니다.",
+    quote: "이 프론트가 우리 작업을 막지 않겠다",
+  },
+  {
+    label: "AI 얼라인",
+    title: "AI 솔루션 직무 얼라인",
+    body: "AI Actions에서 Claude와 Gemini를 같은 인터페이스로 추상화한 경험 — AI를 사용하는 것에서 AI 도구를 직접 만드는 개발자로 전환한 경험으로 직결됩니다.",
+    quote: "AI를 사용하는 것에서 AI 도구를 직접 만드는 개발자",
+  },
+  {
+    label: "트레이드오프",
+    title: "트레이드오프 사고 증명하기",
+    body: "기술적으로 확장 가능한 선택(DB 유지)보다, 현재 문제를 가장 단순하게 해결하는 선택을 했습니다. 오버엔지니어링을 스스로 인식하고 되돌렸습니다.",
+    quote: "복잡성 판단력 — 백엔드 개발자가 가장 존중하는 역량",
+  },
+];
+
+export type ServerDeepQA = {
+  q: string;
+  direction: string;
+};
+
+export type RedFlag = {
+  pattern: string;
+  interpretation: string;
+};
+
+export type CompanyFocusPoint = {
+  label: string;
+  question: string;
+  answer: string;
+};
+
+export const SERVER_DEEP_QA: ServerDeepQA[] = [
+  {
+    q: "TEXT[]를 선택한 이유가 뭔가요?",
+    direction:
+      "태그 다중값 저장 + ANY() 연산자로 필터링 — JSONB보다 단순한 배열 조작에 적합했습니다.",
+  },
+  {
+    q: "pg.Pool을 쓴 이유가 뭔가요?",
+    direction:
+      "요청마다 새 커넥션을 생성하면 오버헤드가 발생합니다. Pool로 커넥션을 재사용해 그 비용을 줄였습니다.",
+  },
+  {
+    q: "API Key 인증을 Express 미들웨어로 구현했는데, 문제점은?",
+    direction:
+      "모든 요청에 동일한 키를 사용하므로 키 노출 시 전체를 무효화해야 합니다. JWT라면 만료 시간을 설정하고 토큰별로 관리할 수 있습니다.",
+  },
+  {
+    q: "N+1 문제를 고려했나요?",
+    direction:
+      "GraphQL 리졸버에서 posts를 조회한 뒤 각 post마다 추가 쿼리가 발생할 수 있습니다. DataLoader 패턴으로 배치 처리해 쿼리를 묶을 수 있습니다.",
+  },
+];
+
+export const BACKEND_RED_FLAGS: RedFlag[] = [
+  {
+    pattern: "기술 이름만 나열, 왜를 못 설명",
+    interpretation: "써봤지만 이해하지 못한 것으로 판단",
+  },
+  {
+    pattern: '"백엔드가 이렇게 해주면 됩니다" 식 발언',
+    interpretation: "협업 비용이 높은 타입으로 분류",
+  },
+  {
+    pattern: "실패 경험이 없음",
+    interpretation: "충분히 도전하지 않았거나 반성이 없다고 판단",
+  },
+  {
+    pattern: "자기 결정에 대한 방어적 태도",
+    interpretation: "피드백 수용이 어려운 타입으로 분류",
+  },
+];
+
+export const GURUSPINN_FOCUS_POINTS: CompanyFocusPoint[] = [
+  {
+    label: "소수 정예",
+    question: "자기 영역 밖을 커버할 수 있나?",
+    answer:
+      "Docker/GCP 배포를 직접 해봤고, AI 도구도 직접 만들었습니다. 프론트 외 영역에서도 스스로 움직인 경험이 있습니다.",
+  },
+  {
+    label: "AI 솔루션",
+    question: "AI를 도구로 쓰는 수준인가, 만드는 수준인가?",
+    answer:
+      "AI Actions에서 Claude와 Gemini를 추상화해 직접 만든 경험이 있습니다. 사용하는 것에서 만드는 것으로 전환한 시점이 있습니다.",
+  },
+  {
+    label: "프로덕트 사고",
+    question: "기술 결정이 비즈니스 판단과 연결되는가?",
+    answer:
+      "PostgreSQL 제거는 기술적 선택이 아니라 운영 비용 판단이었습니다. 복잡성이 실제 가치를 만들지 못한다고 판단했습니다.",
+  },
+];
+
+export const BACKEND_STORY_FRAME: StoryFrame = {
+  description:
+    "기술 용어 없이도 전달되는 서사 구조 — 이 패턴이 반복되면 '어떤 스택이든 같은 방식으로 문제를 푸는 개발자'라는 인상을 남긴다.",
+  steps: ["불편함 발견", "원인 분석", "결정", "검증"],
+  example: {
+    label: "ISR 사례 적용 예시",
+    text: "처음엔 60초마다 자동으로 서버가 재빌드되는 걸 당연히 여겼는데, 직접 운영하다 보니 아무것도 바뀌지 않는데도 계속 재빌드되는 걸 목격했습니다. 그래서 '콘텐츠가 추가될 때만 캐시를 갱신'하도록 설계를 바꿨고, 불필요한 서버 부하가 사라졌습니다.",
+    note: "SSR/ISR을 모르는 사람도 '문제를 발견하고 개선하는 사람'이라는 걸 이해할 수 있음",
+  },
+};
 
 export const TECH_KEYWORDS: Keyword[] = [
   {

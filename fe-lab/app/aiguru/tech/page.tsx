@@ -5,6 +5,7 @@ import {
   TECH_INTERVIEW_OVERVIEW,
   PORTFOLIO_SCRIPT,
   TECH_QA_GROUPS,
+  FELAB_PRIORITY_GROUPS,
   TECH_CHECKLIST_GROUPS,
   TECH_KEYWORDS,
 } from "./data";
@@ -18,6 +19,7 @@ const NAV = [
   { href: "#overview", label: "인터뷰 구조" },
   { href: "#script", label: "발표 스크립트" },
   { href: "#qa", label: "예상 질문" },
+  { href: "#felab", label: "Fe-Lab 학습" },
   { href: "#checklist", label: "체크리스트" },
   { href: "#keywords", label: "키워드" },
 ];
@@ -104,7 +106,9 @@ export default function AiguruTechPage() {
                 >
                   <p
                     className={`font-mono text-2xl font-bold ${
-                      part.accent ? "text-accent-magenta" : "text-text-secondary"
+                      part.accent
+                        ? "text-accent-magenta"
+                        : "text-text-secondary"
                     }`}
                   >
                     {part.minutes}
@@ -141,44 +145,43 @@ export default function AiguruTechPage() {
             * 외우지 말고 흐름을 익히기 — 각 결정의 '왜'를 자기 말로 이야기할
             수 있으면 충분
           </p>
-
-          <div className="space-y-3">
+          <div className="space-y-2">
             {PORTFOLIO_SCRIPT.map((section, i) => (
-              <div
+              <details
                 key={i}
-                className="rounded-lg border border-border-subtle bg-bg-surface overflow-hidden"
+                open={i === 0}
+                className="rounded-lg border border-border-subtle bg-bg-surface"
               >
-                <div className="flex items-center justify-between px-4 py-3 bg-bg-elevated border-b border-border-subtle">
-                  <span className="font-mono text-sm font-bold text-text-primary">
-                    {section.label}
-                  </span>
-                  <span className="font-mono text-xs text-accent-cyan">
-                    {section.duration}
-                  </span>
-                </div>
-
-                <div className="px-4 py-3 space-y-2">
+                <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-bg-elevated transition-colors rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm font-bold text-text-primary">
+                      {section.label}
+                    </span>
+                    <span className="font-mono text-xs text-accent-cyan">
+                      {section.duration}
+                    </span>
+                  </div>
+                  <span className="text-text-muted text-xs">▼</span>
+                </summary>
+                <div className="px-4 pb-4 pt-3 border-t border-border-subtle space-y-2">
                   {section.lines.map((line, j) => (
                     <p
                       key={j}
                       className="text-sm text-text-secondary leading-relaxed flex gap-2"
                     >
-                      <span className="text-text-muted shrink-0 font-mono text-xs mt-0.5">
+                      <span className="font-mono text-xs text-text-muted shrink-0 mt-0.5">
                         {j + 1}.
                       </span>
                       {line}
                     </p>
                   ))}
-                </div>
-
-                {section.tip && (
-                  <div className="px-4 py-2 border-t border-border-subtle bg-bg-deep">
-                    <p className="text-xs text-accent-amber">
+                  {section.tip && (
+                    <p className="font-mono text-xs text-accent-amber mt-1">
                       💡 {section.tip}
                     </p>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </details>
             ))}
           </div>
         </section>
@@ -191,11 +194,10 @@ export default function AiguruTechPage() {
           <p className="text-xs text-text-muted font-mono mb-4">
             * 간결하고 솔직하게 — 긴 답변보다 명확한 답변
           </p>
-
           <div className="space-y-6">
             {TECH_QA_GROUPS.map((group) => (
               <div key={group.category}>
-                <h3 className="font-mono text-xs font-bold text-text-muted uppercase tracking-wide mb-3">
+                <h3 className="font-mono text-xs font-bold text-text-muted uppercase tracking-wide mb-2">
                   {group.category}
                 </h3>
                 <div className="space-y-2">
@@ -205,8 +207,8 @@ export default function AiguruTechPage() {
                       className="rounded-lg border border-border-subtle bg-bg-surface"
                     >
                       <summary className="px-4 py-3 cursor-pointer list-none flex items-start gap-2 hover:bg-bg-elevated transition-colors rounded-lg">
-                        <span className="font-mono text-xs text-accent-magenta font-bold shrink-0 mt-0.5">
-                          Q.
+                        <span className="font-mono text-xs text-accent-cyan font-bold shrink-0 mt-0.5">
+                          Q{i + 1}.
                         </span>
                         <span className="text-sm text-text-primary">
                           {item.q}
@@ -225,20 +227,72 @@ export default function AiguruTechPage() {
           </div>
         </section>
 
-        {/* ── 4. 체크리스트 ────────────────────────────────── */}
+        {/* ── 4. Fe-Lab 우선 학습 ──────────────────────────── */}
+        <section>
+          <SectionHeading id="felab">4. Fe-Lab 우선 학습</SectionHeading>
+          <p className="text-xs text-text-muted font-mono mb-4">
+            * 포트폴리오 발표와 예상 질문에 직접 연결되는 토픽 위주로 먼저 복습
+          </p>
+          <div className="space-y-5">
+            {FELAB_PRIORITY_GROUPS.map((group) => (
+              <div key={group.label}>
+                <h3 className="font-mono text-xs font-bold text-text-muted uppercase tracking-wide mb-2">
+                  {group.label}
+                </h3>
+                <div className="rounded-lg border border-border-subtle overflow-hidden">
+                  <table className="w-full text-sm">
+                    <tbody>
+                      {group.topics.map((topic, i) => (
+                        <tr
+                          key={topic.id}
+                          className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated transition-colors"
+                        >
+                          <td className="py-2.5 px-4 w-52 shrink-0">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`font-mono text-xs font-semibold px-1.5 py-0.5 rounded shrink-0 ${
+                                  topic.priority === "high"
+                                    ? "bg-accent-magenta/15 text-accent-magenta"
+                                    : "bg-bg-elevated text-text-muted"
+                                }`}
+                              >
+                                {topic.priority === "high" ? "필수" : "권장"}
+                              </span>
+                              <Link
+                                href={`/topics/${topic.id}`}
+                                className="font-mono text-xs text-accent-cyan hover:underline"
+                              >
+                                {topic.name}
+                              </Link>
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-4 text-xs text-text-secondary">
+                            {topic.reason}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── 5. 체크리스트 ────────────────────────────────── */}
         <section>
           <SectionHeading id="checklist">
-            4. 준비 체크리스트 ({totalChecklist}개)
+            5. 준비 체크리스트 ({totalChecklist}개)
           </SectionHeading>
           <div className="px-4 py-5 rounded-lg border border-border-subtle bg-bg-surface">
             <ChecklistClient />
           </div>
         </section>
 
-        {/* ── 5. 핵심 키워드 ───────────────────────────────── */}
+        {/* ── 6. 핵심 키워드 ───────────────────────────────── */}
         <section>
           <SectionHeading id="keywords">
-            5. 핵심 키워드 ({TECH_KEYWORDS.length}개)
+            6. 핵심 키워드 ({TECH_KEYWORDS.length}개)
           </SectionHeading>
           <div className="rounded-lg border border-border-subtle overflow-hidden">
             <table className="w-full font-mono text-sm">
@@ -258,7 +312,7 @@ export default function AiguruTechPage() {
                     key={i}
                     className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated transition-colors"
                   >
-                    <td className="py-2.5 px-4 text-accent-magenta font-semibold text-xs">
+                    <td className="py-2.5 px-4 text-accent-cyan font-semibold text-xs">
                       {kw.term}
                     </td>
                     <td className="py-2.5 px-4 text-text-secondary text-xs">

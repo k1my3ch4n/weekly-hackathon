@@ -10,6 +10,18 @@ export type QAGroup = { category: string; items: QAItem[] };
 export type ChecklistGroup = { title: string; items: string[] };
 export type Keyword = { term: string; def: string };
 
+export type FelabPriorityTopic = {
+  id: string;
+  name: string;
+  reason: string;
+  priority: "high" | "medium";
+};
+
+export type FelabPriorityGroup = {
+  label: string;
+  topics: FelabPriorityTopic[];
+};
+
 export const TECH_INTERVIEW_OVERVIEW = {
   description:
     "포트폴리오 발표 중심의 기술 심화 면접입니다. 지원자의 개발 산출물을 소개하고, 면접관이 그 결정들을 기술적으로 파고드는 구조입니다.",
@@ -163,6 +175,89 @@ export const TECH_QA_GROUPS: QAGroup[] = [
       {
         q: "Turborepo Monorepo를 도입한 이유와 실제 장단점은?",
         a: "블로그와 포트폴리오 두 앱이 공통 컴포넌트와 훅을 공유해야 했기 때문에 도입했습니다. packages/로 공유 모듈을 분리해 중복 코드를 줄이고, Turborepo의 태스크 캐싱으로 빌드 속도를 단축했습니다. 다만 초기 설정 비용이 있어 단일 앱에서는 굳이 사용할 필요가 없다고 생각합니다.",
+      },
+    ],
+  },
+];
+
+export const FELAB_PRIORITY_GROUPS: FelabPriorityGroup[] = [
+  {
+    label: "최우선 — 포트폴리오와 직접 연결",
+    topics: [
+      {
+        id: "rendering-patterns",
+        name: "CSR / SSR / ISR / SSG",
+        reason:
+          "On-demand ISR 결정의 기반 — 4가지 렌더링 방식을 비교하고 '왜 ISR을 선택했나'를 설명할 수 있어야 함",
+        priority: "high",
+      },
+      {
+        id: "server-components",
+        name: "React Server Components",
+        reason:
+          "Server Component 마이그레이션이 포트폴리오 핵심 결정 — RSC와 Client Component의 경계, hydration 흐름 이해 필요",
+        priority: "high",
+      },
+      {
+        id: "nextjs-deep-dive",
+        name: "Next.js 심화",
+        reason:
+          "주력 기술 스택 — App Router 구조, Route Handler, caching 레이어, revalidate 동작 방식",
+        priority: "high",
+      },
+      {
+        id: "react-query",
+        name: "React Query",
+        reason:
+          "staleTime vs gcTime 질문이 예상 Q&A에 포함 — zustand와의 역할 구분 설명까지 연결",
+        priority: "high",
+      },
+    ],
+  },
+  {
+    label: "핵심 기본기 — 기술 깊이 확인",
+    topics: [
+      {
+        id: "state-management",
+        name: "상태 관리 패턴",
+        reason:
+          "Zustand vs React Query 역할 구분 기준 — 서버 상태와 클라이언트 UI 상태를 어떻게 나누는지 설명 준비",
+        priority: "medium",
+      },
+      {
+        id: "http-cache",
+        name: "HTTP 캐시 전략",
+        reason:
+          "ISR 이해의 기반 — Cache-Control, stale-while-revalidate 흐름을 알아야 캐싱 결정을 깊이 설명 가능",
+        priority: "medium",
+      },
+      {
+        id: "graphql-rest",
+        name: "GraphQL vs REST",
+        reason:
+          "GraphQL 서버 → Next.js API Route 전환 경험 연결 — 왜 GraphQL이 이 프로젝트에 불필요했는지 설명",
+        priority: "medium",
+      },
+      {
+        id: "generics",
+        name: "제네릭과 유틸리티 타입",
+        reason:
+          "TypeScript 100% 강점 표현 — AI Actions 멀티 프로바이더 추상화 사례와 연결 가능",
+        priority: "medium",
+      },
+      {
+        id: "reconciliation",
+        name: "재조정 (Reconciliation)",
+        reason:
+          "React 내부 동작 기본기 — key prop 사용 이유, 불필요한 리렌더링 최적화 판단 근거",
+        priority: "medium",
+      },
+      {
+        id: "module-bundling",
+        name: "모듈 번들링과 최적화",
+        reason:
+          "Turborepo Monorepo 구조 이해와 연결 — 빌드 태스크 캐싱, 번들 분리 전략",
+        priority: "medium",
       },
     ],
   },

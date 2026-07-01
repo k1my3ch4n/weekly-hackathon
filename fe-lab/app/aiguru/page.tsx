@@ -63,12 +63,20 @@ export default function AiguruPage() {
             </a>
           ))}
         </div>
-        <Link
-          href="/"
-          className="ml-auto font-mono text-xs text-text-muted hover:text-text-secondary transition-colors shrink-0"
-        >
-          ← Fe-Lab
-        </Link>
+        <div className="ml-auto flex items-center gap-3 shrink-0">
+          <Link
+            href="/aiguru/tech"
+            className="font-mono text-xs text-accent-magenta hover:text-text-primary transition-colors"
+          >
+            기술 면접 →
+          </Link>
+          <Link
+            href="/"
+            className="font-mono text-xs text-text-muted hover:text-text-secondary transition-colors"
+          >
+            ← Fe-Lab
+          </Link>
+        </div>
       </nav>
 
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-14">
